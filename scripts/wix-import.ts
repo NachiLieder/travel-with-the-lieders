@@ -71,12 +71,27 @@ function fileExt(url: string): string {
   return ext === "jpeg" ? "jpg" : ext;
 }
 
+/** Percent-encode any non-ASCII chars in the path (Hebrew slugs need this). */
+function encodeUrlPath(url: string): string {
+  try {
+    const u = new URL(url);
+    u.pathname = u.pathname
+      .split("/")
+      .map((seg) => (/^[\x00-\x7F]*$/.test(seg) ? seg : encodeURIComponent(seg)))
+      .join("/");
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 async function fetchHtml(url: string): Promise<string> {
-  const res = await fetch(url, {
+  const safeUrl = encodeUrlPath(url);
+  const res = await fetch(safeUrl, {
     headers: { "user-agent": USER_AGENT, accept: "text/html,application/xhtml+xml" },
   });
   if (!res.ok) {
-    throw new Error(`Failed to fetch ${url}: ${res.status} ${res.statusText}`);
+    throw new Error(`Failed to fetch ${safeUrl}: ${res.status} ${res.statusText}`);
   }
   return res.text();
 }
@@ -117,12 +132,40 @@ async function importTrip(slug: string, wixUrl: string) {
   const photosDir = path.join(tripDir, "photos");
   fs.mkdirSync(photosDir, { recursive: true });
 
-  console.log(`   Fetching HTML…`);
-  const html = await fetchHtml(wixUrl);
-  const urls = extractImageUrls(html);
+  // Manifest-first: if a hand-curated list of image URLs lives at
+  // content/trips/<slug>/.wix-urls.json, use it. This is the escape hatch
+  // for Hebrew-URL posts where Wix doesn't serve the rendered HTML to bots.
+  let urls: string[] = [];
+  const manifestPath = path.join(tripDir, ".wix-urls.json");
+  if (fs.existsSync(manifestPath)) {
+    console.log(`   Using manifest: ${path.relative(ROOT, manifestPath)}`);
+    try {
+      const raw = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+      const list: string[] = Array.isArray(raw) ? raw : raw.urls ?? [];
+      urls = list
+        .map(normalizeWixUrl)
+        .filter((u) => !EXCLUDED_FILENAMES.has(fileStem(u)));
+    } catch (err) {
+      console.warn(`   ⚠️  Couldn't parse manifest: ${(err as Error).message}`);
+    }
+  } else {
+    console.log(`   Fetching HTML…`);
+    try {
+      const html = await fetchHtml(wixUrl);
+      urls = extractImageUrls(html);
+    } catch (err) {
+      console.warn(`   ✗ Fetch failed: ${(err as Error).message}`);
+    }
+  }
+
   console.log(`   Found ${urls.length} unique images`);
   if (urls.length === 0) {
-    console.warn(`   ⚠️  No images extracted — Wix layout may have changed`);
+    console.warn(
+      `   ⚠️  No images for this trip. ` +
+        `If the Wix post does have photos but the script can't see them ` +
+        `(typical for Hebrew-URL posts), add a content/trips/${slug}/.wix-urls.json ` +
+        `with the full-res URLs and re-run.`
+    );
     return;
   }
 
