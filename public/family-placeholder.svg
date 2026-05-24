@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f4d9cd"/>
+      <stop offset="50%" stop-color="#e89a76"/>
+      <stop offset="100%" stop-color="#c66b4a"/>
+    </linearGradient>
+    <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff4e3"/>
+      <stop offset="100%" stop-color="#fde4c5"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7a4f2e"/>
+      <stop offset="100%" stop-color="#3a2615"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="800" height="1000" fill="url(#bg)"/>
+
+  <!-- Sun -->
+  <circle cx="600" cy="280" r="90" fill="url(#sun)" opacity="0.9"/>
+
+  <!-- Distant mountains -->
+  <path d="M0,560 L150,420 L260,500 L400,380 L560,470 L700,400 L800,440 L800,1000 L0,1000 Z" fill="#7a4f2e" opacity="0.55"/>
+  <path d="M0,660 L120,560 L260,620 L420,520 L600,610 L800,560 L800,1000 L0,1000 Z" fill="url(#ground)" opacity="0.85"/>
+
+  <!-- Ground -->
+  <rect x="0" y="780" width="800" height="220" fill="#1a1612"/>
+
+  <!-- Family silhouettes (4) -->
+  <g fill="#1a1612">
+    <!-- Parent 1 (taller) -->
+    <circle cx="290" cy="600" r="38"/>
+    <path d="M252,650 L252,780 L328,780 L328,650 Q328,635 290,635 Q252,635 252,650 Z"/>
+    <!-- Parent 2 -->
+    <circle cx="380" cy="610" r="36"/>
+    <path d="M344,656 L344,780 L416,780 L416,656 Q416,642 380,642 Q344,642 344,656 Z"/>
+    <!-- Kid 1 (taller) -->
+    <circle cx="460" cy="640" r="28"/>
+    <path d="M432,675 L432,780 L488,780 L488,675 Q488,663 460,663 Q432,663 432,675 Z"/>
+    <!-- Kid 2 (smaller) -->
+    <circle cx="525" cy="655" r="24"/>
+    <path d="M501,685 L501,780 L549,780 L549,685 Q549,675 525,675 Q501,675 501,685 Z"/>
+  </g>
+
+  <!-- Helper text (visible only inside this placeholder) -->
+  <text x="400" y="900" text-anchor="middle" fill="#ffffff" opacity="0.55"
+        font-family="system-ui, sans-serif" font-size="22" font-weight="600">
+    Drop your family photo at public/family.jpg
+  </text>
+</svg>

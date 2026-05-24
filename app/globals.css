@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Brand tokens — Travel With The Lieders
+   Warm, editorial, family-travel feel
+   ============================================================ */
+
+:root {
+  /* Surfaces */
+  --color-bg: #faf7f2;        /* warm off-white */
+  --color-bg-elev: #ffffff;
+  --color-ink: #1a1612;       /* deep warm ink */
+  --color-ink-soft: #4a4339;
+  --color-ink-muted: #8a8275;
+  --color-line: #ede6da;
+
+  /* Brand */
+  --color-accent: #c66b4a;          /* terracotta */
+  --color-accent-soft: #f4d9cd;
+  --color-accent-ink: #7a3b22;
+  --color-leaf: #5b7a4e;            /* nature green for "best for nature" */
+  --color-sun: #e0a93f;              /* warm sun yellow */
+  --color-ocean: #4f7da3;            /* ocean blue */
+
+  /* Map */
+  --map-visited: #c66b4a;
+  --map-visited-hover: #a84e2e;
+  --map-unvisited: #e5ddcf;
+  --map-stroke: #faf7f2;
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-bg-elev: var(--color-bg-elev);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-ink-muted: var(--color-ink-muted);
+  --color-line: var(--color-line);
+  --color-accent: var(--color-accent);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-accent-ink: var(--color-accent-ink);
+  --color-leaf: var(--color-leaf);
+  --color-sun: var(--color-sun);
+  --color-ocean: var(--color-ocean);
+  --font-sans: var(--font-heebo), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-frank-ruhl), Georgia, serif;
+}
+
+html {
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "kern", "liga";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hebrew display headings */
+.font-display,
+h1, h2, h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+/* Gentle pulse for visited countries on the map */
+@keyframes mapPulse {
+  0%, 100% { opacity: 0.95; }
+  50% { opacity: 0.75; }
+}
+
+.map-country-visited {
+  animation: mapPulse 3.5s ease-in-out infinite;
+}
+
+/* Ken-burns slow zoom for hero images */
+@keyframes kenBurns {
+  0% { transform: scale(1.0); }
+  100% { transform: scale(1.08); }
+}
+
+.ken-burns {
+  animation: kenBurns 18s ease-out forwards;
+}
+
+/* Smooth tap highlight removal */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* RTL-aware focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
