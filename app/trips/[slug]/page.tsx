@@ -14,8 +14,16 @@ import { TripHero } from "@/components/trip/TripHero";
 import { QuickFacts } from "@/components/trip/QuickFacts";
 import { ShareRow } from "@/components/trip/ShareRow";
 import { RelatedTrips } from "@/components/trip/RelatedTrips";
-import { Gallery, type GalleryImage } from "@/components/trip/Gallery";
+import { Gallery } from "@/components/trip/Gallery";
+import {
+  Photo,
+  Photos,
+  PhotoBreak,
+  TripPhotosProvider,
+} from "@/components/trip/TripPhotos";
+import { Reveal } from "@/components/ui/Reveal";
 import { mdxComponents } from "@/components/trip/mdxComponents";
+import type { TripPhoto } from "@/components/trip/TripPhotosContext";
 
 export async function generateStaticParams() {
   return getAllTrips().map((t) => ({ slug: t.slug }));
@@ -53,67 +61,89 @@ export default async function TripPage({
 
   const country = getCountryByIso2(trip.country);
   const related = getRelatedTrips(trip, 3);
-  const gallery = getTripGallery(slug) as GalleryImage[] | null;
+  const gallery = (getTripGallery(slug) ?? []) as TripPhoto[];
+
+  // Components available inside MDX
+  const components = {
+    ...mdxComponents,
+    Photo,
+    Photos,
+    PhotoBreak,
+    Reveal,
+  };
 
   return (
-    <article>
-      <TripHero trip={trip} />
-      <QuickFacts trip={trip} />
+    <TripPhotosProvider gallery={gallery}>
+      <article>
+        <TripHero trip={trip} />
+        <QuickFacts trip={trip} />
 
-      {/* ARTICLE BODY — narrow reading column */}
-      <div className="mx-auto max-w-3xl px-5 sm:px-8 py-10 sm:py-14">
-        {country && (
-          <nav className="text-sm text-ink-muted mb-6" aria-label="breadcrumb">
-            <a href="/" className="hover:text-accent">בית</a>
-            {" / "}
-            <a href={`/countries/${country.slug}`} className="hover:text-accent">
-              {country.heName}
-            </a>
-            {" / "}
-            <span className="text-ink">{trip.title}</span>
-          </nav>
+        {/* ARTICLE BODY — narrow reading column; inline photos can break out */}
+        <div className="mx-auto max-w-3xl px-5 sm:px-8 py-10 sm:py-14">
+          {country && (
+            <nav
+              className="text-sm text-ink-muted mb-6"
+              aria-label="breadcrumb"
+            >
+              <a href="/" className="hover:text-accent">
+                בית
+              </a>
+              {" / "}
+              <a
+                href={`/countries/${country.slug}`}
+                className="hover:text-accent"
+              >
+                {country.heName}
+              </a>
+              {" / "}
+              <span className="text-ink">{trip.title}</span>
+            </nav>
+          )}
+
+          <Reveal>
+            <p className="font-display text-xl sm:text-2xl leading-relaxed text-ink mb-10">
+              {trip.excerpt}
+            </p>
+          </Reveal>
+
+          <div className="text-ink-soft">
+            <MDXRemote
+              source={trip.body}
+              components={components}
+              options={{
+                mdxOptions: { remarkPlugins: [remarkGfm] },
+              }}
+            />
+          </div>
+        </div>
+
+        {/* GALLERY — every photo, justified rows */}
+        {gallery.length > 0 && (
+          <Reveal>
+            <section className="bg-gradient-to-b from-bg via-bg-elev/50 to-bg border-y border-line">
+              <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-2">
+                <header className="max-w-3xl mx-auto text-center mb-2">
+                  <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-accent font-semibold mb-2">
+                    גלריה
+                  </p>
+                  <h2 className="font-display text-3xl sm:text-4xl font-bold">
+                    כל התמונות מהטיול
+                  </h2>
+                  <p className="mt-2 text-ink-soft text-sm sm:text-base">
+                    לחצו על כל תמונה לתצוגה מלאה
+                  </p>
+                </header>
+                <Gallery images={gallery} />
+              </div>
+            </section>
+          </Reveal>
         )}
 
-        <p className="font-display text-xl sm:text-2xl leading-relaxed text-ink mb-10">
-          {trip.excerpt}
-        </p>
-
-        <div className="text-ink-soft">
-          <MDXRemote
-            source={trip.body}
-            components={mdxComponents}
-            options={{
-              mdxOptions: { remarkPlugins: [remarkGfm] },
-            }}
-          />
+        <div className="mx-auto max-w-3xl px-5 sm:px-8 py-10">
+          <ShareRow title={trip.title} slug={trip.slug} />
+          <RelatedTrips trips={related} />
         </div>
-      </div>
-
-      {/* GALLERY — full-bleed editorial break */}
-      {gallery && gallery.length > 0 && (
-        <section className="bg-gradient-to-b from-bg via-bg-elev/50 to-bg border-y border-line">
-          <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-2">
-            <header className="max-w-3xl mx-auto text-center mb-2">
-              <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-accent font-semibold mb-2">
-                גלריה
-              </p>
-              <h2 className="font-display text-3xl sm:text-4xl font-bold">
-                התמונות מהטיול
-              </h2>
-              <p className="mt-2 text-ink-soft text-sm sm:text-base">
-                לחצו על כל תמונה לתצוגה מלאה
-              </p>
-            </header>
-            <Gallery images={gallery} />
-          </div>
-        </section>
-      )}
-
-      {/* SHARE + RELATED — back inside reading column */}
-      <div className="mx-auto max-w-3xl px-5 sm:px-8 py-10">
-        <ShareRow title={trip.title} slug={trip.slug} />
-        <RelatedTrips trips={related} />
-      </div>
-    </article>
+      </article>
+    </TripPhotosProvider>
   );
 }
