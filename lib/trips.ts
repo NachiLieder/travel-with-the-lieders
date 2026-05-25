@@ -95,6 +95,22 @@ export function getTripsByCountry(iso2: string): Trip[] {
   return getAllTrips().filter((t) => t.country === iso2);
 }
 
+/**
+ * Load the auto-generated gallery.json for a trip if it exists.
+ * Returns the catalog produced by `npm run photos:import` (with each entry's
+ * srcs, caption, altText). Used by the trip page to render <Gallery />.
+ */
+export function getTripGallery(slug: string): unknown[] | null {
+  const galleryPath = path.join(TRIPS_DIR, slug, "gallery.json");
+  if (!fs.existsSync(galleryPath)) return null;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(galleryPath, "utf-8"));
+    return Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
 export function getRelatedTrips(trip: Trip, limit = 3): Trip[] {
   const all = getAllTrips();
   // Explicit relations win

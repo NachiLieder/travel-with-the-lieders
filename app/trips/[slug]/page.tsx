@@ -3,12 +3,18 @@ import type { Metadata } from "next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 
-import { getAllTrips, getRelatedTrips, getTripBySlug } from "@/lib/trips";
+import {
+  getAllTrips,
+  getRelatedTrips,
+  getTripBySlug,
+  getTripGallery,
+} from "@/lib/trips";
 import { getCountryByIso2 } from "@/lib/countries";
 import { TripHero } from "@/components/trip/TripHero";
 import { QuickFacts } from "@/components/trip/QuickFacts";
 import { ShareRow } from "@/components/trip/ShareRow";
 import { RelatedTrips } from "@/components/trip/RelatedTrips";
+import { Gallery, type GalleryImage } from "@/components/trip/Gallery";
 import { mdxComponents } from "@/components/trip/mdxComponents";
 
 export async function generateStaticParams() {
@@ -47,14 +53,15 @@ export default async function TripPage({
 
   const country = getCountryByIso2(trip.country);
   const related = getRelatedTrips(trip, 3);
+  const gallery = getTripGallery(slug) as GalleryImage[] | null;
 
   return (
     <article>
       <TripHero trip={trip} />
       <QuickFacts trip={trip} />
 
+      {/* ARTICLE BODY — narrow reading column */}
       <div className="mx-auto max-w-3xl px-5 sm:px-8 py-10 sm:py-14">
-        {/* Country breadcrumb */}
         {country && (
           <nav className="text-sm text-ink-muted mb-6" aria-label="breadcrumb">
             <a href="/" className="hover:text-accent">בית</a>
@@ -67,12 +74,10 @@ export default async function TripPage({
           </nav>
         )}
 
-        {/* Emotional hook (excerpt as lead paragraph) */}
         <p className="font-display text-xl sm:text-2xl leading-relaxed text-ink mb-10">
           {trip.excerpt}
         </p>
 
-        {/* MDX body — contains the rest of the trip sections */}
         <div className="text-ink-soft">
           <MDXRemote
             source={trip.body}
@@ -82,9 +87,31 @@ export default async function TripPage({
             }}
           />
         </div>
+      </div>
 
+      {/* GALLERY — full-bleed editorial break */}
+      {gallery && gallery.length > 0 && (
+        <section className="bg-gradient-to-b from-bg via-bg-elev/50 to-bg border-y border-line">
+          <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-2">
+            <header className="max-w-3xl mx-auto text-center mb-2">
+              <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-accent font-semibold mb-2">
+                גלריה
+              </p>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold">
+                התמונות מהטיול
+              </h2>
+              <p className="mt-2 text-ink-soft text-sm sm:text-base">
+                לחצו על כל תמונה לתצוגה מלאה
+              </p>
+            </header>
+            <Gallery images={gallery} />
+          </div>
+        </section>
+      )}
+
+      {/* SHARE + RELATED — back inside reading column */}
+      <div className="mx-auto max-w-3xl px-5 sm:px-8 py-10">
         <ShareRow title={trip.title} slug={trip.slug} />
-
         <RelatedTrips trips={related} />
       </div>
     </article>
