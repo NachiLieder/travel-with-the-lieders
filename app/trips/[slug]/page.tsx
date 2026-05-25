@@ -102,11 +102,9 @@ export default async function TripPage({
             </nav>
           )}
 
-          <Reveal>
-            <p className="font-display text-xl sm:text-2xl leading-relaxed text-ink mb-10">
-              {trip.excerpt}
-            </p>
-          </Reveal>
+          <p className="font-display text-xl sm:text-2xl leading-relaxed text-ink mb-8">
+            {trip.excerpt}
+          </p>
 
           <div className="text-ink-soft">
             <MDXRemote
@@ -121,24 +119,22 @@ export default async function TripPage({
 
         {/* GALLERY — every photo, justified rows */}
         {gallery.length > 0 && (
-          <Reveal>
-            <section className="bg-gradient-to-b from-bg via-bg-elev/50 to-bg border-y border-line">
-              <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-2">
-                <header className="max-w-3xl mx-auto text-center mb-2">
-                  <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-accent font-semibold mb-2">
-                    גלריה
-                  </p>
-                  <h2 className="font-display text-3xl sm:text-4xl font-bold">
-                    כל התמונות מהטיול
-                  </h2>
-                  <p className="mt-2 text-ink-soft text-sm sm:text-base">
-                    לחצו על כל תמונה לתצוגה מלאה
-                  </p>
-                </header>
-                <Gallery images={gallery} />
-              </div>
-            </section>
-          </Reveal>
+          <section className="bg-gradient-to-b from-bg via-bg-elev/50 to-bg border-y border-line">
+            <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-2">
+              <header className="max-w-3xl mx-auto text-center mb-2">
+                <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-accent font-semibold mb-2">
+                  גלריה
+                </p>
+                <h2 className="font-display text-3xl sm:text-4xl font-bold">
+                  כל התמונות מהטיול
+                </h2>
+                <p className="mt-1 text-ink-soft text-sm sm:text-base">
+                  לחצו על כל תמונה לתצוגה מלאה
+                </p>
+              </header>
+              <Gallery images={gallery} />
+            </div>
+          </section>
         )}
 
         <div className="mx-auto max-w-3xl px-5 sm:px-8 py-10">
