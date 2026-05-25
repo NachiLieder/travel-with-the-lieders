@@ -23,6 +23,7 @@ import {
 } from "@/components/trip/TripPhotos";
 import { Reveal } from "@/components/ui/Reveal";
 import { mdxComponents } from "@/components/trip/mdxComponents";
+import { DayCard } from "@/components/trip/DayCard";
 import type { TripPhoto } from "@/components/trip/TripPhotosContext";
 
 export async function generateStaticParams() {
@@ -63,9 +64,25 @@ export default async function TripPage({
   const related = getRelatedTrips(trip, 3);
   const gallery = (getTripGallery(slug) ?? []) as TripPhoto[];
 
-  // Components available inside MDX
+  // Components available inside MDX.
+  //
+  // DayCard receives the gallery as a direct prop (`_gallery`) — React Context
+  // from TripPhotosProvider doesn't propagate through MDXRemote's RSC
+  // boundary, so context-based access returns null during SSG and no photos
+  // would render in the prerendered HTML. We close over the page's `gallery`
+  // value and pass it explicitly.
+  // Bind the page's gallery into DayCard via the MDX components map.
+  // Context alone wouldn't survive next-mdx-remote/rsc's RSC boundary
+  // (gallery becomes undefined inside DayCard during SSG), so we close over
+  // it explicitly.
+  //
+  // Note: MDX expression attributes (`day={1}`) get stripped by the parser
+  // in some Hebrew/RTL contexts — that's why MDX files use string form
+  // `day="1"` and DayCard parses to number internally.
   const components = {
     ...mdxComponents,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    DayCard: (props: any) => <DayCard {...props} _gallery={gallery} />,
     Photo,
     Photos,
     PhotoBreak,

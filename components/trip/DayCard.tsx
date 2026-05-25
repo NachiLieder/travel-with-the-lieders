@@ -1,11 +1,10 @@
 "use client";
 
 import { Children, isValidElement, type ReactNode } from "react";
-import { RowsPhotoAlbum, type Photo as AlbumPhoto } from "react-photo-album";
-import "react-photo-album/rows.css";
 
 import { useTripPhotosOptional } from "./useTripPhotosOptional";
 import { captionFromFilename } from "@/lib/captions";
+import type { TripPhoto } from "./TripPhotosContext";
 
 /**
  * Walk the rendered children tree and pull every photo id/match string that
@@ -64,17 +63,26 @@ export function DayCard({
   day,
   title,
   photos,
+  _gallery,
   children,
 }: {
   day: number | string;
   title: string;
-  /** Optional explicit list of photo id substrings. If provided, overrides
-   *  the auto-match against `day{N}-`. Each entry matches by substring. */
   photos?: string[];
+  _gallery?: import("./TripPhotosContext").TripPhoto[];
   children: ReactNode;
 }) {
   const ctx = useTripPhotosOptional();
-  const gallery = ctx?.gallery ?? [];
+  const gallery = _gallery ?? ctx?.gallery ?? [];
+
+  // MDX `day="3"` arrives as a string; `day={3}` arrives as a number.
+  // Coerce so the dayN- regex match works either way.
+  const dayNum =
+    typeof day === "number"
+      ? day
+      : typeof day === "string" && /^\d+$/.test(day)
+        ? parseInt(day, 10)
+        : null;
 
   // Photos the user placed INSIDE the card's text get resolved to actual
   // gallery ids so the auto-grid below can skip them (no duplicates).
@@ -106,41 +114,30 @@ export function DayCard({
             );
           })
           .filter((p): p is NonNullable<typeof p> => Boolean(p))
-      : typeof day === "number"
+      : dayNum !== null
         ? gallery.filter((p) => {
             const f = (p.filename ?? p.id ?? "").toLowerCase();
-            return new RegExp(`(^|[^a-z])day${day}[-_]`).test(f);
+            return new RegExp(`(^|[^a-z])day${dayNum}[-_]`).test(f);
           })
         : []
   ).filter((p) => !consumedIds.has(p.id));
 
-  // Build photo album entries — index back to gallery for shared lightbox
-  const photoEntries = dayPhotos.map((p) => {
-    const globalIndex = ctx?.gallery.findIndex((g) => g.id === p.id) ?? -1;
-    return { p, globalIndex };
-  });
-
-  const albumPhotos: AlbumPhoto[] = photoEntries.map(({ p }) => ({
-    src: p.medium ?? p.large ?? p.src,
-    width: p.width ?? 1600,
-    height: p.height ?? 1200,
-    alt: p.altText ?? (p.filename ? captionFromFilename(p.filename) : ""),
-    title: p.caption || (p.filename ? captionFromFilename(p.filename) : ""),
-    srcSet: [
-      p.thumb && { src: p.thumb, width: 320, height: 0 },
-      p.medium && { src: p.medium, width: 640, height: 0 },
-      p.large && { src: p.large, width: 1280, height: 0 },
-    ].filter(Boolean) as { src: string; width: number; height: number }[],
-  }));
+  // Photo entries with index back to the gallery (for the shared lightbox)
+  const photoEntries: { p: TripPhoto; globalIndex: number }[] = dayPhotos.map(
+    (p) => {
+      const globalIndex = gallery.findIndex((g) => g.id === p.id);
+      return { p, globalIndex };
+    }
+  );
 
   return (
     <article className="my-5 rounded-2xl border border-line bg-bg-elev p-5 sm:p-6 hover:shadow-md transition-shadow">
       <header className="flex items-baseline gap-3 mb-3">
         <span className="font-display text-3xl font-bold text-accent">
-          {day}
+          {dayNum ?? day}
         </span>
         <span className="text-xs uppercase tracking-wider text-ink-muted">
-          יום {day}
+          יום {dayNum ?? day}
         </span>
         <h3 className="font-display text-lg font-bold flex-1">{title}</h3>
       </header>
@@ -148,28 +145,34 @@ export function DayCard({
         {children}
       </div>
 
-      {albumPhotos.length > 0 && (
-        <div className="mt-5 -mx-1" dir="ltr">
-          <RowsPhotoAlbum
-            photos={albumPhotos}
-            spacing={4}
-            targetRowHeight={(width) =>
-              width < 500 ? 130 : width < 900 ? 180 : 220
-            }
-            rowConstraints={{ singleRowMaxHeight: 320 }}
-            onClick={({ index }) => {
-              const globalIdx = photoEntries[index]?.globalIndex ?? -1;
-              if (globalIdx >= 0) ctx?.open(globalIdx);
-            }}
-            componentsProps={{
-              image: {
-                loading: "eager",
-                className:
-                  "rounded-md object-cover transition-transform duration-300 hover:scale-[1.02]",
-                style: { cursor: "zoom-in" },
-              },
-            }}
-          />
+      {photoEntries.length > 0 && (
+        <div
+          className="mt-5 grid gap-2 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+          dir="ltr"
+        >
+          {photoEntries.map(({ p, globalIndex }) => {
+            const cap =
+              p.caption || (p.filename ? captionFromFilename(p.filename) : "");
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() =>
+                  globalIndex >= 0 ? ctx?.open(globalIndex) : undefined
+                }
+                className="group relative aspect-square overflow-hidden rounded-md bg-line shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
+                aria-label={`להגדיל: ${cap || "תמונה"}`}
+              >
+                <img
+                  src={p.medium ?? p.large ?? p.src}
+                  alt={p.altText ?? cap}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <span className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+            );
+          })}
         </div>
       )}
     </article>
