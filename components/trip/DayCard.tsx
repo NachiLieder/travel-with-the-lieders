@@ -1,11 +1,53 @@
 "use client";
 
-import { type ReactNode } from "react";
+import { Children, isValidElement, type ReactNode } from "react";
 import { RowsPhotoAlbum, type Photo as AlbumPhoto } from "react-photo-album";
 import "react-photo-album/rows.css";
 
 import { useTripPhotosOptional } from "./useTripPhotosOptional";
 import { captionFromFilename } from "@/lib/captions";
+
+/**
+ * Walk the rendered children tree and pull every photo id/match string that
+ * appears inside an inline <Photo>, <Photos>, or <PhotoBreak>. Used by the
+ * DayCard to dedupe: an inline photo shouldn't ALSO appear in the auto-grid
+ * at the bottom of the card.
+ *
+ * Identification uses `displayName` (set explicitly on each component) so it
+ * survives minification.
+ */
+function collectInlinePhotoNeedles(node: ReactNode): string[] {
+  const out: string[] = [];
+  Children.forEach(node, (child) => {
+    if (!isValidElement(child)) return;
+
+    const type = child.type as unknown as { displayName?: string };
+    const name = type?.displayName;
+    const props = child.props as Record<string, unknown>;
+
+    if (name === "Photo" || name === "PhotoBreak") {
+      const id = props?.id;
+      if (typeof id === "string") out.push(id);
+    } else if (name === "Photos") {
+      const ids = props?.ids;
+      if (Array.isArray(ids)) {
+        for (const id of ids) if (typeof id === "string") out.push(id);
+      } else if (typeof ids === "string") {
+        ids
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .forEach((id) => out.push(id));
+      }
+    }
+
+    const innerChildren = (props as { children?: ReactNode })?.children;
+    if (innerChildren !== undefined) {
+      out.push(...collectInlinePhotoNeedles(innerChildren));
+    }
+  });
+  return out;
+}
 
 /**
  * One day in a trip itinerary.
@@ -34,25 +76,43 @@ export function DayCard({
   const ctx = useTripPhotosOptional();
   const gallery = ctx?.gallery ?? [];
 
-  // 1. Explicit list wins
-  // 2. Otherwise auto-match by `dayN-` if `day` is numeric
-  const dayPhotos = photos
-    ? photos
-        .map((needle) => {
-          const m = needle.toLowerCase();
-          return gallery.find(
-            (p) =>
-              p.id.toLowerCase().includes(m) ||
-              (p.filename ?? "").toLowerCase().includes(m)
-          );
-        })
-        .filter((p): p is NonNullable<typeof p> => Boolean(p))
-    : typeof day === "number"
-      ? gallery.filter((p) => {
-          const f = (p.filename ?? p.id ?? "").toLowerCase();
-          return new RegExp(`(^|[^a-z])day${day}[-_]`).test(f);
-        })
-      : [];
+  // Photos the user placed INSIDE the card's text get resolved to actual
+  // gallery ids so the auto-grid below can skip them (no duplicates).
+  const inlineNeedles = collectInlinePhotoNeedles(children);
+  const consumedIds = new Set<string>();
+  for (const needle of inlineNeedles) {
+    const m = needle.toLowerCase();
+    const hit = gallery.find(
+      (p) =>
+        p.id.toLowerCase() === m ||
+        p.id.toLowerCase().includes(m) ||
+        (p.filename ?? "").toLowerCase().includes(m)
+    );
+    if (hit) consumedIds.add(hit.id);
+  }
+
+  // 1. Explicit `photos` list wins.
+  // 2. Otherwise auto-match by `dayN-` if `day` is numeric.
+  // In either case, drop anything already used inline.
+  const dayPhotos = (
+    photos
+      ? photos
+          .map((needle) => {
+            const m = needle.toLowerCase();
+            return gallery.find(
+              (p) =>
+                p.id.toLowerCase().includes(m) ||
+                (p.filename ?? "").toLowerCase().includes(m)
+            );
+          })
+          .filter((p): p is NonNullable<typeof p> => Boolean(p))
+      : typeof day === "number"
+        ? gallery.filter((p) => {
+            const f = (p.filename ?? p.id ?? "").toLowerCase();
+            return new RegExp(`(^|[^a-z])day${day}[-_]`).test(f);
+          })
+        : []
+  ).filter((p) => !consumedIds.has(p.id));
 
   // Build photo album entries — index back to gallery for shared lightbox
   const photoEntries = dayPhotos.map((p) => {

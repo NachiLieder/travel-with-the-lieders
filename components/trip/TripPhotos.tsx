@@ -225,6 +225,7 @@ export function Photo({
     </figure>
   );
 }
+Photo.displayName = "Photo";
 
 /**
  * <Photos ids={["...","...","..."]} />
@@ -281,6 +282,7 @@ export function Photos({ ids }: { ids?: string[] | string }) {
     </section>
   );
 }
+Photos.displayName = "Photos";
 
 /**
  * <PhotoBreak id="..." caption="..." />
@@ -345,3 +347,4 @@ export function PhotoBreak({
     </section>
   );
 }
+PhotoBreak.displayName = "PhotoBreak";
