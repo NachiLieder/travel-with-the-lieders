@@ -19,7 +19,9 @@
     "next-mdx-remote": "^6.0.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "remark-gfm": "^4.0.1"
+    "react-photo-album": "^3.1.0",
+    "remark-gfm": "^4.0.1",
+    "yet-another-react-lightbox": "^3.21.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
