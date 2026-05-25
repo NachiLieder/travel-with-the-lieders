@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 /**
- * Scroll-triggered fade-in. Wrap any block in <Reveal> and it slides up +
- * fades in when it enters the viewport. Once revealed, it stays revealed
- * (no re-trigger when scrolling back up).
+ * Scroll-triggered fade-in. Fires *before* the element actually enters the
+ * viewport (rootMargin extends 200px below) so by the time the user sees the
+ * block, the animation has finished. Tight, no perceived blank space.
  *
- * Used to give long trip posts the magazine-style "as you scroll, content
- * unveils" feel — without animating in a distracting way.
+ * Falls back to immediate visible if IntersectionObserver isn't available
+ * or the user has prefers-reduced-motion.
  */
 export function Reveal({
   children,
@@ -23,12 +23,21 @@ export function Reveal({
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (typeof IntersectionObserver === "undefined") {
+    if (typeof window === "undefined") return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (prefersReducedMotion || typeof IntersectionObserver === "undefined") {
       setVisible(true);
       return;
     }
+
     const node = ref.current;
     if (!node) return;
+
+    // Trigger well before the element scrolls into view so by the time
+    // the user can see it, the animation is already finishing or done.
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -36,7 +45,7 @@ export function Reveal({
           observer.disconnect();
         }
       },
-      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0, rootMargin: "0px 0px 200px 0px" }
     );
     observer.observe(node);
     return () => observer.disconnect();
@@ -48,8 +57,8 @@ export function Reveal({
       className={className}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(24px)",
-        transition: `opacity 700ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform 700ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
+        transform: visible ? "translateY(0)" : "translateY(10px)",
+        transition: `opacity 450ms ease-out ${delay}ms, transform 450ms ease-out ${delay}ms`,
         willChange: "opacity, transform",
       }}
     >

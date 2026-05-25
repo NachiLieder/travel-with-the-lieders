@@ -74,12 +74,14 @@ export default async function TripPage({
 
   return (
     <TripPhotosProvider gallery={gallery}>
-      <article>
+      <article className="overflow-x-clip">
         <TripHero trip={trip} />
         <QuickFacts trip={trip} />
 
-        {/* ARTICLE BODY — narrow reading column; inline photos can break out */}
-        <div className="mx-auto max-w-3xl px-5 sm:px-8 py-10 sm:py-14">
+        {/* ARTICLE BODY — narrow reading column; full-bleed PhotoBreaks
+            escape via w-screen translate-x while everything else stays
+            constrained to this width */}
+        <div className="mx-auto max-w-3xl px-5 sm:px-8 py-8 sm:py-12">
           {country && (
             <nav
               className="text-sm text-ink-muted mb-6"

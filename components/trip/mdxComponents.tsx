@@ -57,7 +57,7 @@ export function DayCard({
   children: ReactNode;
 }) {
   return (
-    <article className="rounded-2xl border border-line bg-bg-elev p-5 hover:shadow-md transition-shadow">
+    <article className="my-6 rounded-2xl border border-line bg-bg-elev p-5 sm:p-6 hover:shadow-md transition-shadow">
       <header className="flex items-baseline gap-3 mb-3">
         <span className="font-display text-3xl font-bold text-accent">
           {day}
@@ -67,7 +67,7 @@ export function DayCard({
         </span>
         <h3 className="font-display text-lg font-bold flex-1">{title}</h3>
       </header>
-      <div className="text-ink-soft leading-relaxed [&>p]:mb-2 last:[&>p]:mb-0">
+      <div className="text-ink-soft leading-relaxed [&>p]:mb-3 last:[&>p]:mb-0 [&>figure]:my-4 [&>section]:my-4">
         {children}
       </div>
     </article>

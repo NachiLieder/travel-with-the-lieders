@@ -174,14 +174,14 @@ export function Photo({
   const { index, photo } = found;
   const finalCaption = caption ?? resolveCaption(photo);
 
+  // All photos are block-level (no floats). Floats with RTL Hebrew create
+  // awkward narrow text columns and gaps — we use clean block layout.
+  // `align="wide"` gets a slightly wider feel via a max-width bump, but is
+  // still constrained to the article so it never overflows.
   const wrapper =
     align === "wide"
-      ? "my-10 -mx-4 sm:-mx-12 lg:-mx-24"
-      : align === "left"
-        ? "my-8 sm:float-left sm:w-1/2 sm:mr-6 sm:mb-4"
-        : align === "right"
-          ? "my-8 sm:float-right sm:w-1/2 sm:ml-6 sm:mb-4"
-          : "my-10 mx-auto max-w-[110%] sm:max-w-[115%] sm:-mx-[7.5%]";
+      ? "my-6 sm:my-8 mx-auto max-w-full"
+      : "my-6 sm:my-8 mx-auto max-w-full sm:max-w-[92%]";
 
   const aspectClass =
     aspect === "square"
@@ -253,7 +253,7 @@ export function Photos({ ids }: { ids?: string[] | string }) {
           : "grid-cols-2 sm:grid-cols-2 lg:grid-cols-4";
 
   return (
-    <section className="my-10 -mx-2 sm:mx-0" dir="ltr">
+    <section className="my-6 sm:my-8" dir="ltr">
       <div className={`grid ${gridClass} gap-2 sm:gap-3`}>
         {items.map(({ index, photo }) => {
           const cap = resolveCaption(photo);
@@ -301,7 +301,7 @@ export function PhotoBreak({
 
   return (
     <section
-      className="relative my-14 sm:my-20 left-1/2 right-1/2 -translate-x-1/2 w-screen max-w-none"
+      className="relative my-10 sm:my-14 left-1/2 right-1/2 -translate-x-1/2 w-screen max-w-none"
       dir="ltr"
     >
       <button
