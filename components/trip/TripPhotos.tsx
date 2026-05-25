@@ -197,20 +197,22 @@ export function Photo({
       <button
         type="button"
         onClick={() => open(index)}
-        className="group block w-full overflow-hidden rounded-2xl bg-line shadow-md hover:shadow-2xl transition-shadow duration-500"
+        className="group relative block w-full overflow-hidden rounded-2xl bg-line shadow-md hover:shadow-2xl transition-shadow duration-500"
         aria-label={`להגדיל: ${finalCaption || "תמונה"}`}
       >
         <div className={`relative ${aspectClass}`}>
           <img
             src={photo.large ?? photo.src}
             alt={photo.altText ?? finalCaption}
-            loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            loading="eager"
+            className={`block w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] ${
+              aspectClass ? "h-full" : "max-h-[60vh]"
+            }`}
           />
-          <span className="absolute top-3 right-3 grid place-items-center w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm text-white opacity-0 group-hover:opacity-100 transition-opacity">
-            <ZoomIn className="w-4 h-4" />
-          </span>
         </div>
+        <span className="absolute top-3 right-3 grid place-items-center w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm text-white opacity-0 group-hover:opacity-100 transition-opacity">
+          <ZoomIn className="w-4 h-4" />
+        </span>
       </button>
       {finalCaption && (
         <figcaption
@@ -299,20 +301,22 @@ export function PhotoBreak({
   const { index, photo } = found;
   const finalCaption = caption ?? resolveCaption(photo);
 
+  // Cinema-banner aspect (max-h-[55vh]) keeps PhotoBreak compact even for
+  // landscape originals — no more 900px placeholders eating the page.
+  // Image is eager-loaded so there's no lazy-load placeholder gap.
   return (
     <section
-      className="relative my-10 sm:my-14 left-1/2 right-1/2 -translate-x-1/2 w-screen max-w-none"
+      className="relative my-8 sm:my-12 left-1/2 right-1/2 -translate-x-1/2 w-screen max-w-none"
       dir="ltr"
     >
       <button
         type="button"
         onClick={() => open(index)}
-        className="group relative block w-full overflow-hidden bg-line"
+        className="group relative block w-full overflow-hidden bg-line max-h-[55vh] sm:max-h-[60vh]"
         aria-label={`להגדיל: ${finalCaption || "תמונה"}`}
-        style={{ aspectRatio: photo.width && photo.height ? `${photo.width}/${photo.height}` : "16/9" }}
       >
         <img
-          src={photo.src}
+          src={photo.large ?? photo.src}
           srcSet={[
             photo.medium && `${photo.medium} 640w`,
             photo.large && `${photo.large} 1280w`,
@@ -322,17 +326,17 @@ export function PhotoBreak({
             .join(", ")}
           sizes="100vw"
           alt={photo.altText ?? finalCaption}
-          loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-[1.02]"
+          loading="eager"
+          className="block w-full max-h-[55vh] sm:max-h-[60vh] object-cover transition-transform duration-[1200ms] group-hover:scale-[1.02]"
         />
-        <span className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30" />
+        <span className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/25 pointer-events-none" />
         <span className="absolute top-4 left-4 sm:top-6 sm:left-6 grid place-items-center w-11 h-11 rounded-full bg-black/35 backdrop-blur-sm text-white opacity-0 group-hover:opacity-100 transition-opacity">
           <ZoomIn className="w-5 h-5" />
         </span>
       </button>
       {finalCaption && (
         <figcaption
-          className="mx-auto max-w-3xl px-5 sm:px-8 mt-3 text-sm text-ink-muted text-center italic"
+          className="mx-auto max-w-3xl px-5 sm:px-8 mt-2 text-sm text-ink-muted text-center italic"
           dir="rtl"
         >
           {finalCaption}
