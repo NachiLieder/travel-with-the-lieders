@@ -147,7 +147,11 @@ export function DayCard({
 
       {photoEntries.length > 0 && (
         <div
-          className="mt-5 grid gap-2 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+          className={
+            photoEntries.length === 1
+              ? "mt-6 max-w-xl mx-auto"
+              : "mt-6 grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2"
+          }
           dir="ltr"
         >
           {photoEntries.map(({ p, globalIndex }) => {
@@ -160,16 +164,16 @@ export function DayCard({
                 onClick={() =>
                   globalIndex >= 0 ? ctx?.open(globalIndex) : undefined
                 }
-                className="group relative aspect-square overflow-hidden rounded-md bg-line shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
+                className="group relative block w-full aspect-[4/3] overflow-hidden rounded-xl bg-line shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
                 aria-label={`להגדיל: ${cap || "תמונה"}`}
               >
                 <img
-                  src={p.medium ?? p.large ?? p.src}
+                  src={p.large ?? p.medium ?? p.src}
                   alt={p.altText ?? cap}
                   loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.07]"
                 />
-                <span className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </button>
             );
           })}
