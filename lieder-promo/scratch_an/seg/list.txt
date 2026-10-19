@@ -1,0 +1,4 @@
+file 'C:/Users/nlieder/Personal/lieder-promo/scratch_an/seg/seg_00.mp4'
+file 'C:/Users/nlieder/Personal/lieder-promo/scratch_an/seg/seg_01.mp4'
+file 'C:/Users/nlieder/Personal/lieder-promo/scratch_an/seg/seg_02.mp4'
+file 'C:/Users/nlieder/Personal/lieder-promo/scratch_an/seg/seg_03.mp4'

@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our Trip – Holiday Motion Promo</title>
+<style>
+  :root{ --navy:#0E0830; --jade:#2BB58A; --coral:#F4786A; --sun:#FFD36B; --ctl:72px; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#07041c;overflow:hidden;font-family:"Segoe UI",Arial,sans-serif;color:#fff}
+  #viewport{position:absolute;inset:0 0 var(--ctl) 0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  #stage{position:relative;width:1920px;height:1080px;flex:none;transform-origin:center center;overflow:hidden;border-radius:6px;background:#2e9be8}
+  .layer{position:absolute;left:0;top:0;will-change:transform}
+  #sun{position:absolute;width:260px;height:260px;border-radius:50%;left:1360px;top:0;will-change:transform}
+  #world{position:absolute;left:960px;top:540px;width:0;height:0;transform-origin:0 0;will-change:transform}
+  .screen{position:absolute;overflow:hidden;box-shadow:0 40px 110px rgba(10,5,50,.6),0 0 0 3px rgba(255,255,255,.35);
+    background:linear-gradient(160deg,#2BB58A,#1b8f6d)}
+  .screen .logo{position:absolute;left:50%;top:50%;width:92px;height:92px;margin:-46px 0 0 -46px;border-radius:24px}
+  .screen .inner{position:absolute;left:0;top:0;transform-origin:0 0;direction:rtl;background:linear-gradient(170deg,#1a1050 0%,#3a2a8a 60%,#6a3fb0 100%);overflow:hidden}
+  .screen img.shot{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;display:none}
+  .ring{position:absolute;border:3px solid var(--sun);border-radius:14px;pointer-events:none}
+  .pill{position:absolute;display:flex;align-items:center;gap:16px;height:84px;padding:0 34px 0 22px;border-radius:999px;white-space:nowrap;
+    background:rgba(24,12,74,.62);border:1.5px solid rgba(255,255,255,.4);backdrop-filter:blur(8px);font-size:34px;font-weight:700;
+    box-shadow:0 18px 50px rgba(10,5,50,.4);transform-origin:left center}
+  .pill .ic{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#FF9A6A,var(--coral));display:grid;place-items:center;flex:none}
+  .pill svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .map-lbl{position:absolute;color:#8c8c92;font-size:12px;white-space:nowrap}
+  .mpin{position:absolute;width:40px;height:40px;margin:0;border-radius:50% 50% 50% 0;transform-origin:50% 100%;background:#8b5cf6;border:3px solid #fff;display:grid;place-items:center;font-weight:800;font-size:16px;box-shadow:0 6px 16px rgba(0,0,0,.45)}
+  .title{position:absolute;width:560px;text-align:right;font-weight:800;line-height:1.02;text-shadow:0 4px 28px rgba(20,10,70,.45)}
+  .title .w{display:inline-block;margin-left:22px;will-change:transform}
+  .title .h{font-size:92px}
+  .title .sub{font-size:36px;font-weight:600;margin-top:26px;line-height:1.3;color:#fff}
+  .num{display:inline-block;font-size:26px;font-weight:800;letter-spacing:4px;margin-bottom:20px;padding:8px 20px;border-radius:999px;background:rgba(255,255,255,.22);border:1.5px solid rgba(255,255,255,.5)}
+  svg.lines{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+  #hud-logo{position:absolute;left:56px;top:46px;display:flex;align-items:center;gap:16px;z-index:5;text-shadow:0 2px 14px rgba(20,10,70,.5)}
+  #hud-logo img{width:70px;height:70px;border-radius:18px;box-shadow:0 8px 28px rgba(10,5,50,.4)}
+  #hud-logo b{display:block;font-size:34px;line-height:1}
+  #hud-logo i{display:block;font-style:normal;font-size:20px;margin-top:5px;font-weight:600;opacity:.9}
+  #kicker{position:absolute;left:0;right:0;top:250px;text-align:center;z-index:4;font-size:46px;font-weight:800;letter-spacing:12px;text-shadow:0 4px 24px rgba(20,10,70,.5)}
+  #veil{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(40,20,90,.5),rgba(20,10,60,.9));opacity:0;z-index:3}
+  #cta{position:absolute;left:50%;top:50%;z-index:4;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:34px;width:1400px}
+  #cta .tag{font-size:60px;font-weight:800;text-align:center;line-height:1.1;text-shadow:0 4px 24px rgba(20,10,70,.5)}
+  #pill{height:170px;border-radius:85px;background:linear-gradient(90deg,var(--coral),#FF9A6A);display:grid;place-items:center;overflow:hidden;box-shadow:0 26px 90px rgba(244,120,106,.55)}
+  #pill span{font-size:74px;font-weight:800;white-space:nowrap}
+  #pill img{position:absolute;width:110px;height:110px;border-radius:28px}
+  #cta .url{font-size:42px;font-weight:700}
+  #ctl{position:absolute;left:0;right:0;bottom:0;height:var(--ctl);display:flex;align-items:center;gap:16px;padding:0 24px;background:rgba(14,8,48,.94);border-top:1px solid rgba(255,255,255,.12)}
+  #ctl button{height:42px;min-width:42px;padding:0 16px;border-radius:21px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font:600 15px "Segoe UI",Arial;cursor:pointer;display:flex;align-items:center;gap:8px;justify-content:center}
+  #ctl button:hover{background:rgba(255,255,255,.18)}
+  #ctl button#play{background:var(--coral);border-color:var(--coral)}
+  #ctl svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  #seek{flex:1;-webkit-appearance:none;appearance:none;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--coral) var(--p,0%),rgba(255,255,255,.2) var(--p,0%));outline:none;cursor:pointer}
+  #seek::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(244,120,106,.5)}
+  #seek::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:0}
+  #time{font:600 15px "Segoe UI";color:#B9B3DB;min-width:96px;text-align:right;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <div id="sky" class="layer" style="width:1920px;height:760px"></div>
+    <div id="sun"></div>
+    <div id="clouds" class="layer" style="width:1px;height:1px"></div>
+    <div id="islands" class="layer" style="width:1px;height:1px"></div>
+    <div id="sea" class="layer" style="width:1920px;height:1080px;top:0"></div>
+    <div id="waves" class="layer" style="width:1px;height:1px"></div>
+    <div id="palms" class="layer" style="width:1px;height:1px"></div>
+    <div id="world"></div>
+    <div id="hud-logo"><img src="logo.png" alt=""><div><b>הטיול שלנו</b><i>Our Trip</i></div></div>
+    <div id="kicker">THAILAND · VIETNAM</div>
+    <div id="veil"></div>
+    <div id="cta">
+      <div class="tag" id="ctaTag">Your family trip, beautifully organized</div>
+      <div id="pill"><img id="pillLogo" src="logo.png" alt=""><span id="pillTxt">Book a Free Consultation</span></div>
+      <div class="url" id="ctaUrl">lieder-trips.netlify.app</div>
+    </div>
+  </div>
+</div>
+<div id="ctl">
+  <button id="play" title="Play / Pause (Space)"><svg id="icoPlay" viewBox="0 0 24 24"><polygon points="6 4 20 12 6 20 6 4" fill="#fff"/></svg><span id="playTxt">Play</span></button>
+  <button id="restart" title="Restart (R)"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Restart</button>
+  <input id="seek" type="range" min="0" max="30000" step="1" value="0">
+  <div id="time">0:00.0 / 0:30</div>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+const DUR = 30;
+const clamp = (x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const seg = (t,a,b)=>clamp((t-a)/(b-a));
+const lerp = (a,b,x)=>a+(b-a)*x;
+function bezier(x1,y1,x2,y2){
+  const cx=3*x1,bx=3*(x2-x1)-cx,ax=1-cx-bx,cy=3*y1,by=3*(y2-y1)-cy,ay=1-cy-by;
+  const X=s=>((ax*s+bx)*s+cx)*s, Y=s=>((ay*s+by)*s+cy)*s, dX=s=>(3*ax*s+2*bx)*s+cx;
+  return x=>{ if(x<=0)return 0; if(x>=1)return 1; let s=x;
+    for(let i=0;i<8;i++){const e=X(s)-x; if(Math.abs(e)<1e-5)break; const d=dX(s); if(Math.abs(d)<1e-6)break; s-=e/d;}
+    return Y(s); };
+}
+const E = { snap:bezier(.25,1,.5,1), pan:bezier(.65,0,.2,1), back:bezier(.34,1.56,.64,1), lin:x=>x, io:bezier(.45,0,.55,1) };
+const hex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const mix=(a,b,u)=>{const A=hex(a),B=hex(b);return '#'+A.map((v,i)=>Math.round(lerp(v,B[i],u)).toString(16).padStart(2,'0')).join('');};
+
+/* ---------- icons ---------- */
+const ICON = {
+  clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  plus:'<path d="M5 12h14M12 5v14"/>',
+  pencil:'<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  tag:'<path d="M3 6h18M7 12h10M10 18h4"/>',
+  swap:'<path d="M8 3 4 7l4 4M4 7h16M16 21l4-4-4-4M20 17H4"/>',
+  wallet:'<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4M3 5v14a2 2 0 0 0 2 2h16v-5M18 12a2 2 0 0 0 0 4h4v-4Z"/>',
+  baby:'<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/>',
+  map:'<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>',
+  plane:'<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>'
+};
+const svgI = n=>`<svg viewBox="0 0 24 24">${ICON[n]}</svg>`;
+
+/* ---------- replica screens (native pixel sizes, from the real app) ---------- */
+const glass = 'background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.22);';
+const sunsetImg = '<div style="position:absolute;inset:0;background:linear-gradient(180deg,#5b4a9a 0%,#e0735a 55%,#f2a95a 70%,#2a1a3a 71%,#1a1030 100%)"></div>';
+const hdr = (title,sub,w,btnL)=>`
+  <div style="position:absolute;left:0;top:0;width:${w}px;height:72px;background:rgba(14,8,48,.65);border-bottom:1px solid rgba(255,255,255,.12)"></div>
+  <div style="position:absolute;right:${w>700?118:112}px;top:12px;font-size:24px;font-weight:800">${title}</div>
+  <div style="position:absolute;right:${w>700?118:112}px;top:44px;font-size:13px;color:#cfc9ee">${sub}</div>
+  <div style="position:absolute;right:${w>700?72:62}px;top:12px;width:44px;height:44px;border-radius:14px;background:#8e7cf5;display:grid;place-items:center;font-size:18px">⇌</div>
+  <div style="position:absolute;right:${w>700?14:8}px;top:10px;width:46px;height:46px;border-radius:14px;${glass}display:grid;place-items:center;font-size:20px">›</div>
+  ${btnL?`<div style="position:absolute;left:82px;top:12px;width:46px;height:46px;border-radius:14px;background:#f4786a;display:grid;place-items:center;font-size:30px;font-weight:300">+</div>`:''}`;
+
+function replicaHome(){
+  const chips=['כל הטיול','1 בנקוק','2 קראבי','3 קאו לאק','4 פוקט','5 צ׳אנג מאי'];
+  return `
+  <div style="position:absolute;left:0;top:0;width:665px;height:590px;border-radius:0 0 54px 54px;overflow:hidden;background:linear-gradient(180deg,#8d8fd8 0%,#7a86c4 12%,#2f5a2c 28%,#1d4a22 52%,#0f5d63 66%,#0c3d52 100%)">
+    <svg width="665" height="590" style="position:absolute;inset:0">
+      <path d="M0 0H190L150 200L190 330L110 430L0 450Z" fill="#183a1a"/>
+      <path d="M0 40 L170 0 L220 70 L330 280 L250 430 L0 460Z" fill="#2c6b27" opacity=".9"/>
+      <path d="M290 150 L390 85 L520 95 L610 200 L600 430 L290 430Z" fill="#27591f"/>
+      <path d="M300 210 L420 110 L560 130 L600 300 L460 420 L300 430Z" fill="#3a8a2e" opacity=".85"/>
+      <path d="M560 140 L665 110 L665 430 L600 430Z" fill="#1c3b1c"/>
+      <rect y="430" width="665" height="160" fill="#106372"/>
+      <ellipse cx="190" cy="475" rx="22" ry="8" fill="#2b2216"/>
+    </svg>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,8,48,0) 40%,rgba(14,8,48,.78) 100%)"></div>
+    <div style="position:absolute;left:80px;top:12px;width:46px;height:46px;border-radius:14px;${glass}display:grid;place-items:center;font-size:22px">⚙</div>
+    <div style="position:absolute;right:8px;top:28px;padding:8px 18px;${glass}font-weight:800;font-size:17px;background:rgba(30,20,90,.5)">עוד <span id="cnt">49</span> ימים</div>
+    <div style="position:absolute;right:10px;top:296px;font-size:15px;font-weight:700">הבא: בנקוק</div>
+    <div style="position:absolute;right:10px;top:318px;font:800 118px/1 Impact,'Arial Narrow',sans-serif;letter-spacing:2px">הטיול שלנו</div>
+    <div style="position:absolute;right:10px;top:442px;display:flex;gap:12px;direction:rtl">
+      <span style="padding:8px 18px;border-radius:999px;background:rgba(30,20,90,.7);border:1px solid rgba(255,255,255,.25);font-weight:700;font-size:15px;direction:ltr">07.12 – 04.03</span>
+      <span style="padding:8px 18px;border-radius:999px;background:rgba(30,20,90,.7);border:1px solid rgba(255,255,255,.25);font-weight:700;font-size:15px">3 לילות</span></div>
+    <div style="position:absolute;right:8px;top:520px;display:flex;gap:12px;direction:rtl;width:2000px">
+      ${chips.map(c=>`<span class="chip" style="flex:none;padding:0 22px;height:48px;display:flex;align-items:center;border-radius:999px;font-weight:800;font-size:17px;background:rgba(80,70,150,.7);border:1px solid rgba(255,255,255,.25)">${c}</span>`).join('')}</div>
+  </div>
+  <div style="position:absolute;left:23px;top:612px;width:623px;height:195px;border-radius:32px;${glass}background:rgba(90,70,190,.55)">
+    <div style="position:absolute;right:26px;top:22px;font-size:25px;font-weight:800">היום</div>
+    <div style="position:absolute;left:18px;top:30px;font-size:14px;font-weight:700">יום שני, 19.10</div>
+    <div style="position:absolute;left:0;right:0;top:86px;text-align:center;font-size:15px;color:#d8d3f5">אין עדיין תוכנית להיום.</div>
+    <div id="s1btn" style="position:absolute;left:18px;right:18px;top:145px;height:48px;border-radius:24px;background:#f4786a;color:#1b1040;display:grid;place-items:center;font-weight:800;font-size:16px">הוסיפו פעילות להיום</div>
+  </div>`;
+}
+
+function replicaDash(){
+  const acts=[['יומן','📅'],['לפני הטיול','🧳'],['מספרים','📞'],['אטרקציות','☆'],['הטיולים שלי','💼']];
+  return `
+  <div style="position:absolute;left:22px;top:8px;width:640px;height:300px;border-radius:40px;${glass}background:rgba(80,60,170,.45)">
+    <div style="position:absolute;right:22px;top:22px;font-size:15px;font-weight:700">הוצאות עד כה</div>
+    <div id="curTog" style="position:absolute;left:22px;top:26px;width:148px;height:44px;border-radius:22px;background:rgba(14,8,48,.45);display:flex;direction:rtl;padding:4px;gap:4px">
+      ${['₪','฿','$'].map(c=>`<span class="cur" style="flex:1;border-radius:18px;display:grid;place-items:center;font-weight:800;font-size:17px">${c}</span>`).join('')}</div>
+    <div style="position:absolute;right:22px;top:50px;font:800 64px/1 Impact,'Arial Narrow',sans-serif;direction:ltr"><span id="curSym">₪</span>0</div>
+    <div style="position:absolute;right:22px;top:122px;font-size:14px;font-weight:700">גררו על הגרף לפי יום</div>
+    <div id="chart" style="position:absolute;left:18px;top:146px;width:600px;height:124px;overflow:hidden">
+      <div id="chartclip" style="position:absolute;left:0;top:0;height:130px;width:100%;overflow:hidden">
+        <div style="position:absolute;left:0;top:62px;width:600px;height:60px;background:linear-gradient(180deg,#e0689a 0%,#8a4fc0 45%,#2f2a7a 100%);opacity:.9"></div>
+        <div style="position:absolute;left:0;top:60px;width:600px;height:5px;border-radius:3px;background:#fff;box-shadow:0 0 18px #fff"></div>
+      </div>
+      <div style="position:absolute;right:0;top:0;height:130px;border-right:3px dotted rgba(255,255,255,.7)"></div>
+      <div style="position:absolute;right:-9px;top:52px;width:22px;height:18px;border-radius:50%;background:#fff"></div>
+    </div>
+    <div style="position:absolute;left:20px;top:268px;font-size:13px;font-weight:800">06.12</div>
+    <div style="position:absolute;right:20px;top:268px;font-size:13px;font-weight:800">06.12</div>
+  </div>
+  <div style="position:absolute;left:22px;top:322px;width:640px;height:376px;border-radius:36px;${glass}background:rgba(80,60,170,.42)">
+    <div style="position:absolute;right:22px;top:16px;font-size:24px;font-weight:800">המסלול</div>
+    <div style="position:absolute;left:20px;top:24px;font-size:14px;font-weight:700;color:#cfc3ff">למפה המלאה ‹</div>
+    <div style="position:absolute;left:20px;top:56px;width:600px;height:300px;border-radius:26px;overflow:hidden;background:#232326;border:1px solid rgba(255,255,255,.25)">
+      <svg width="600" height="300" style="position:absolute;inset:0">
+        <path d="M0 0H150C170 40 150 90 190 120 230 160 250 200 300 230 340 250 380 270 420 300H0Z" fill="#2c2c2f"/>
+        <path d="M150 0H600V300H420C400 250 350 230 300 200 270 150 230 90 190 50Z" fill="#3d3d40"/>
+        <path d="M300 0 L330 80 L420 120 L480 60 L520 0" stroke="#585858" stroke-width="1.5" fill="none"/>
+        <line id="dashLine" x1="105" y1="92" x2="492" y2="172" stroke="#f4786a" stroke-width="6" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+      </svg>
+      <div class="map-lbl" style="left:380px;top:196px;letter-spacing:2px">TRANG</div>
+      <div class="map-lbl" style="left:526px;top:180px;letter-spacing:2px">PHATTHAL</div>
+      <div class="mpin" id="dpin2" style="left:87px;top:56px">2</div>
+      <div class="mpin" id="dpin3" style="left:475px;top:136px">3</div>
+      <div class="map-lbl" style="left:52px;top:124px;color:#fff;font-weight:800;font-size:13px;text-shadow:0 0 4px #000">קראבי</div>
+      <div class="map-lbl" style="left:426px;top:204px;color:#fff;font-weight:800;font-size:13px;text-shadow:0 0 4px #000">קאו לאק</div>
+    </div>
+  </div>
+  <div style="position:absolute;left:14px;top:714px;width:680px;display:flex;gap:10px;direction:rtl">
+    ${acts.map(a=>`<span style="flex:none;height:48px;padding:0 20px;border-radius:999px;display:flex;align-items:center;gap:8px;${glass}background:rgba(120,90,200,.45);font-weight:800;font-size:15px">${a[1]} ${a[0]}</span>`).join('')}</div>
+  <div id="addBtn" style="position:absolute;left:22px;top:780px;width:640px;height:66px;border-radius:33px;background:#f4786a;color:#1b1040;display:grid;place-items:center;font-weight:800;font-size:20px;box-shadow:0 12px 30px rgba(0,0,0,.3)">מה מוסיפים לטיול? &nbsp;＋</div>`;
+}
+
+function replicaRoute(){
+  const cards=[
+    {y:78,h:189,n:'קראבי',s:'דרום, תאילנד',d:'11 בדצמבר – 18 בדצמבר',l:'7 לילות',b:'כל מה שיש בקראבי'},
+    {y:280,h:217,n:'קאו לאק',s:'דרום, תאילנד',d:'18 בדצמבר – 23 בדצמבר',l:'5 לילות',b:'כל מה שיש בקאו לאק',hotel:'Avani resort'},
+    {y:510,h:188,n:'פוקט',s:'דרום, תאילנד',d:'23 בדצמבר – 28 בדצמבר',l:'5 לילות',b:'כל מה שיש בפוקט'},
+    {y:712,h:190,n:'צ׳אנג מאי',s:'צפון, תאילנד',d:'28 בדצמבר – 2 בינואר',l:'66 לילות',b:'כל מה שיש בצ׳אנג מאי'}];
+  return hdr('מסלול הטיול','6 יעדים · 103 לילות',679,true)+`
+  <div style="position:absolute;right:11px;top:75px;bottom:0;width:0;border-right:2px dashed rgba(255,255,255,.3)"></div>
+  ${cards.map(c=>`
+   <div class="tcard" style="position:absolute;left:28px;top:${c.y}px;width:602px;height:${c.h}px;border-radius:30px;${glass}background:rgba(60,45,150,.5)">
+     <div style="position:absolute;right:16px;top:16px;width:56px;height:56px;border-radius:14px;overflow:hidden;border:1px solid #fff">${sunsetImg}</div>
+     <div style="position:absolute;right:82px;top:18px;font-size:19px;font-weight:800">${c.n}</div>
+     <div style="position:absolute;right:82px;top:44px;font-size:13px;color:#c5bfe8">${c.s}</div>
+     <div style="position:absolute;left:24px;top:22px;width:16px;height:16px"><svg viewBox="0 0 24 24" width="16" height="16" style="stroke:#cfc7ff;fill:none;stroke-width:2">${ICON.pencil}</svg></div>
+     <div style="position:absolute;right:16px;top:82px;display:flex;gap:10px;direction:rtl">
+       <span style="padding:0 14px;height:30px;display:flex;align-items:center;border-radius:10px;background:#1f1648;font-weight:700;font-size:13px">📅 ${c.d}</span>
+       <span style="padding:0 14px;height:30px;display:flex;align-items:center;border-radius:10px;background:#2c2162;font-weight:700;font-size:13px">${c.l}</span></div>
+     ${c.hotel?`<div style="position:absolute;right:16px;top:124px;font-size:12px;color:#aeb4ff;direction:ltr">✈ ${c.hotel}</div>`:''}
+     <div style="position:absolute;left:16px;right:16px;top:${c.h-64}px;height:46px;border-radius:14px;background:#f4786a;color:#1b1040;display:grid;place-items:center;font-weight:800;font-size:15px">☆ ${c.b}</div>
+   </div>
+   <div style="position:absolute;left:652px;top:${c.y+22}px;width:20px;height:20px;border-radius:50%;background:#f4786a;border:4px solid #1a1040;box-sizing:content-box;margin:-4px"></div>`).join('')}`;
+}
+
+function replicaMap(){
+  const chips=[['לינות',1,'#2fa58c'],['אטרקציות',0,'#f08a5d'],['אוכל',0,'#e26a9a'],['רפואה',0,'#d93a3a'],['תחבורה',0,'#7e86f0'],['יעדים',0,'#8b5cf6']];
+  return hdr('המפה','3 מקומות מסומנים',766,false)+`
+  <div style="position:absolute;left:0;top:85px;width:900px;display:flex;gap:12px;direction:rtl;padding-right:66px">
+   ${chips.map(c=>`<span style="flex:none;height:36px;padding:0 16px;display:flex;align-items:center;gap:8px;border-radius:999px;background:${c[2]};font-weight:800;font-size:14px"><i style="font-style:normal;background:rgba(0,0,0,.25);border-radius:999px;padding:1px 8px;font-size:12px">${c[1]}</i>${c[0]}</span>`).join('')}</div>
+  <div style="position:absolute;left:60px;top:137px;width:640px;height:678px;border-radius:30px;overflow:hidden;background:#232326;border:1px solid rgba(255,255,255,.25)">
+    <svg width="640" height="678" viewBox="0 0 640 678" style="position:absolute;inset:0">
+      <path d="M200 0H330C340 60 360 100 330 150 340 190 330 230 350 270 350 330 360 370 380 400 390 450 330 480 300 520 280 570 250 640 220 678H0V0Z" fill="#2a2a2d"/>
+      <path d="M330 0H640V420L560 380 520 300 470 190 410 130 380 90Z" fill="#37373a"/>
+      <path d="M300 560 L330 520 L390 470 L470 500 L480 560 L560 620 L640 640 L640 678 L360 678 L290 640Z" fill="#37373a"/>
+      <path d="M340 170 C400 120 470 130 520 150" stroke="#555" stroke-width="2" fill="none"/>
+    </svg>
+    <div class="map-lbl" style="left:372px;top:6px;letter-spacing:3px;font-size:13px">THAILAND</div>
+    <div class="map-lbl" style="left:480px;top:156px;letter-spacing:2px;font-size:12px">CAMBODIA</div>
+    <div class="map-lbl" style="left:80px;top:226px;font-style:italic">Andaman Sea</div>
+    <div class="map-lbl" style="left:385px;top:296px;font-style:italic;text-align:center">Gulf of<br>Thailand</div>
+    <div class="map-lbl" style="left:420px;top:560px;letter-spacing:2px;font-size:12px">MALAYSIA</div>
+    <svg width="640" height="678" style="position:absolute;inset:0;overflow:visible"><line id="mapLine" x1="272" y1="378" x2="316" y2="388" stroke="#f4786a" stroke-width="4" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg>
+    <div class="mpin" id="pin1" style="left:345px;top:70px;background:#2fa58c">🛏</div>
+    <div class="mpin" id="pin2" style="left:248px;top:352px">2</div>
+    <div class="mpin" id="pin3" style="left:296px;top:362px">3</div>
+    <div class="map-lbl" id="lb2" style="left:218px;top:408px;color:#fff;font-weight:800;font-size:13px;text-shadow:0 0 4px #000">קראבי</div>
+    <div class="map-lbl" id="lb3" style="left:255px;top:424px;color:#fff;font-weight:800;font-size:13px;text-shadow:0 0 4px #000">קאו לאק</div>
+  </div>`;
+}
+
+function replicaForm(){
+  const lab=(y,t)=>`<div style="position:absolute;right:24px;top:${y}px;font-size:15px;font-weight:800">${t}</div>`;
+  const inp=(y,h,txt,r,w,id)=>`<div style="position:absolute;right:${r}px;top:${y}px;width:${w}px;height:${h}px;border-radius:18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);padding:0 18px;display:flex;align-items:center;font-size:16px;color:#8d87b8">${txt}</div>`;
+  const sel=(y,r,w,txt,col='#fff')=>`<div style="position:absolute;right:${r}px;top:${y}px;width:${w}px;height:50px;border-radius:18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:${col}">${txt}<span style="position:absolute;left:14px;font-size:11px;color:#cfc9ee">⌄</span></div>`;
+  const hint=(y,t)=>`<div style="position:absolute;right:24px;top:${y}px;font-size:11px;color:#a9a3d0">${t}</div>`;
+  const tog=(y,t,id,on)=>`<div style="position:absolute;right:24px;top:${y}px;width:479px;height:50px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;padding:0 18px;font-weight:700;font-size:16px">${t}
+    <div id="${id}" class="tgl" style="position:absolute;left:14px;top:9px;width:48px;height:30px;border-radius:15px;background:${on?'#9a82ff':'#4a3d8f'}"><i style="position:absolute;top:3px;${on?'left:3px':'left:21px'};width:24px;height:24px;border-radius:50%;background:#fff"></i></div></div>`;
+  return `
+  <div id="fscroll" style="position:absolute;left:0;top:70px;width:527px;height:1590px">
+    ${lab(14,'שם המקום *')}
+    <div style="position:absolute;right:24px;top:40px;width:479px;height:50px;border-radius:18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);padding:0 18px;display:flex;align-items:center;font-size:17px"><span id="ftype" style="color:#8d87b8">למשל: מפלי ארסה</span><span id="fcaret" style="width:2px;height:22px;background:#fff;margin-right:2px"></span></div>
+    ${lab(118,'סוג')}<div style="position:absolute;right:270px;top:118px;font-size:15px;font-weight:800">סטטוס</div>
+    ${sel(146,24,225,'🌟 אטרקציות')}${sel(146,263,240,'רעיון')}
+    ${lab(222,'משויך ליעד')}${sel(250,24,479,'— ללא שיוך —','#d7d2f2')}${hint(306,'המקום יופיע בדף היעד הזה, יחד עם הלינה והפעילויות.')}
+    ${lab(336,'קטגוריה')}${sel(364,24,479,'— בחרו קטגוריה —','#d7d2f2')}${hint(420,'בוחרים מהרשימה כדי שאפשר יהיה לסנן אחר כך. «אחר» פותח שדה חופשי.')}
+    ${lab(454,'תיאור קצר')}${inp(482,88,'',24,479)}
+    ${lab(590,'מיקום על המפה')}
+    <div style="position:absolute;right:24px;top:618px;width:380px;height:50px;border-radius:18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);padding:0 18px;display:flex;align-items:center;font-size:15px;color:#8d87b8">חיפוש כתובת או שם מקום…</div>
+    <div style="position:absolute;left:22px;top:612px;width:52px;height:52px;border-radius:16px;background:#f4786a;display:grid;place-items:center;font-size:20px;color:#1b1040">🔍</div>
+    <div style="position:absolute;right:24px;top:678px;display:flex;gap:10px;direction:rtl">
+      <span style="height:36px;padding:0 16px;display:flex;align-items:center;border-radius:12px;background:rgba(50,40,130,.8);border:1px solid rgba(255,255,255,.3);font-weight:800;font-size:13px">🗺 סימון על המפה</span>
+      <span style="height:36px;padding:0 16px;display:flex;align-items:center;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);font-weight:700;font-size:13px;color:#cfc9ee">➤ טרם נקבע מיקום</span></div>
+    ${inp(726,50,'כתובת (טקסט חופשי)',24,479)}
+    ${lab(806,'מחיר משוער')}<div style="position:absolute;right:372px;top:806px;font-size:15px;font-weight:800">מטבע</div>
+    ${inp(834,50,'0',24,330)}${sel(834,364,139,'THB')}
+    ${lab(912,'משך הביקור (דקות)')}<div style="position:absolute;right:270px;top:912px;font-size:15px;font-weight:800">גילאים מתאימים</div>
+    ${inp(940,50,'0',263,240).replace('right:263px','right:24px').replace('width:240px','width:225px')}<div style="position:absolute;right:263px;top:940px;width:240px;height:50px;border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:flex-start;padding:0 18px;font-size:15px;color:#8d87b8;direction:ltr">+3</div>
+    ${tog(1018,'מתאים לילדים','tg1',true)}${tog(1078,'מתאים לתינוק','tg2',false)}${tog(1138,'נדרש רכב כדי להגיע','tg3',false)}
+    ${lab(1216,'קישור ראשי')}${inp(1242,50,'',24,479)}${hint(1298,'האתר הרשמי או דף המידע העיקרי.')}
+    ${lab(1328,'קישורים נוספים')}
+    <div style="position:absolute;right:24px;top:1354px;width:479px;height:50px;border-radius:18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);display:grid;place-items:center;font-weight:800;font-size:16px">הוספת קישור &nbsp;＋</div>
+    ${lab(1434,'תמונות')}
+    <div style="position:absolute;right:24px;top:1462px;width:96px;height:96px;border:2px dashed #9a82ff;border-radius:20px;display:grid;place-items:center;font-size:30px;color:#cfc3ff">＋</div>
+  </div>
+  <div style="position:absolute;left:0;top:0;width:527px;height:70px;background:#150b42;border-bottom:1px solid rgba(255,255,255,.12);z-index:2"></div>
+  <div style="position:absolute;right:26px;top:20px;font-size:22px;font-weight:800;z-index:3">מקום חדש</div>
+  <div style="position:absolute;left:26px;top:16px;font-size:26px;color:#cfc3ff;z-index:3">✕</div>
+  <div style="position:absolute;left:0;top:781px;width:527px;height:62px;background:#150b42;border-top:1px solid rgba(255,255,255,.14);z-index:2"></div>
+  <div id="fsave" style="position:absolute;left:14px;top:790px;width:499px;height:46px;border-radius:23px;background:rgba(244,120,106,.5);display:grid;place-items:center;font-weight:800;font-size:17px;color:#2b1a3a;z-index:3">שמירה</div>`;
+}
+
+function replicaExp(){
+  return hdr('הוצאות','1 רשומות · סה״כ ₪<span id="tot2">14,714.14</span>',705,true)+`
+  <div style="position:absolute;left:30px;top:88px;width:640px;height:57px;border-radius:16px;${glass}background:rgba(20,12,70,.7);display:flex;direction:rtl;padding:5px;gap:6px">
+    <span style="flex:1;border-radius:12px;background:#9a82ff;display:grid;place-items:center;font-weight:800;font-size:15px">הכל</span>
+    <span style="flex:1;display:grid;place-items:center;font-weight:800;font-size:15px;color:#cfc9ee">חודש אחרון</span>
+    <span style="flex:1;display:grid;place-items:center;font-weight:800;font-size:15px;color:#cfc9ee">שבוע אחרון</span></div>
+  <div id="conv" style="position:absolute;left:30px;top:153px;width:640px;height:47px;border-radius:16px;background:#8e7cf5;display:grid;place-items:center;font-weight:800;font-size:16px">ממיר מטבעות ⇄</div>
+  <div style="position:absolute;left:30px;top:217px;width:645px;height:160px;border-radius:22px;${glass}background:rgba(50,40,140,.55)">
+    <div style="position:absolute;right:16px;top:14px;font-size:21px;font-weight:800">סיכום לפי קטגוריה</div>
+    <div style="position:absolute;left:16px;top:14px;font-size:21px;font-weight:800;color:#c9bcff">₪<span id="tot">14,714.14</span></div>
+    <div style="position:absolute;left:16px;right:16px;top:58px;height:12px;border-radius:6px;background:rgba(255,255,255,.18);overflow:hidden"><div id="bar" style="height:100%;width:100%;background:#4a90c8;margin-left:auto"></div></div>
+    <div style="position:absolute;right:16px;top:84px;font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center">טיסות ✈ <i style="width:10px;height:10px;border-radius:50%;background:#4a90c8"></i></div>
+    <div style="position:absolute;left:16px;top:84px;font-size:13px;font-weight:700">₪14,714.14 &nbsp;&nbsp;&nbsp;&nbsp;100%</div>
+    <div style="position:absolute;right:16px;top:124px;font-size:11px;color:#cfc9ee">הסכומים מומרים למטבע הבית (ILS) לפי שערים מ-19.10.2026. עדכון שערים ⟳</div>
+  </div>
+  <div style="position:absolute;left:30px;top:386px;width:645px;height:100px;border-radius:22px;${glass}background:rgba(50,40,140,.55)">
+    <div style="position:absolute;right:16px;top:14px;width:50px;height:50px;border-radius:14px;background:rgba(255,255,255,.12);display:grid;place-items:center;font-size:22px">✈</div>
+    <div style="position:absolute;right:80px;top:12px;font-size:16px;font-weight:800;direction:rtl;white-space:nowrap">כרטיסי טיסה אמריקייטס — 5 נוספים (H7U4N6)</div>
+    <div style="position:absolute;right:80px;top:38px;font-size:12px;color:#cfc9ee">7 בדצמבר · טיסות · בנקוק</div>
+    <div style="position:absolute;right:80px;top:60px;font-size:11px;color:#cfc9ee;direction:rtl;width:420px">2 × 1,277.87 מבוגרים + 2 × 1,041.87 ילדים + 93 תינוק. שולם בכרטיס אשראי.</div>
+    <div style="position:absolute;left:54px;top:20px;font-size:19px;font-weight:800;direction:ltr">$4,732.48</div>
+    <div style="position:absolute;left:54px;top:50px;font-size:12px;color:#cfc9ee">₪14,714.14 ≈</div>
+  </div>`;
+}
+
+/* ---------- storyboard ---------- */
+const GAP = 1250;
+const OFF = [.85,1.65,2.45];  // callout offsets after arrival
+const SCREENS = [
+ { key:'home', nat:[665,813], k:.88, rep:replicaHome, hold:3.0,
+   title:['Your trip,','at a glance'], sub:'Countdown. Cities. Today.',
+   calls:[{r:[.82,.03,.17,.05],txt:'49-day countdown',ic:'clock'},{r:[.02,.635,.96,.075],txt:'Jump to any city',ic:'pin'},{r:[.06,.925,.88,.065],txt:"Add today's plan",ic:'plus'}] },
+ { key:'dash', nat:[695,865], k:.8, rep:replicaDash, hold:2.6,
+   title:['Your trip,','live'], sub:'Spend, route, shortcuts.',
+   calls:[{r:[.05,.03,.25,.07],txt:'Any currency',ic:'swap'},{r:[.05,.44,.9,.34],txt:'Route at a glance',ic:'map'}] },
+ { key:'route', nat:[679,902], k:.8, rep:replicaRoute, hold:2.5,
+   title:['Every stop,','planned'], sub:'Dates, nights, hotels.',
+   calls:[{r:[.54,.175,.4,.05],txt:'Dates & nights',ic:'cal'},{r:[.06,.225,.88,.055],txt:'All things to do',ic:'list'}] },
+ { key:'map', nat:[766,823], k:.88, rep:replicaMap, hold:2.5,
+   title:['See it','on the map'], sub:'Every place, pinned.',
+   calls:[{r:[.06,.1,.94,.05],txt:'Filter by category',ic:'tag'},{r:[.38,.6,.13,.12],txt:'Pins for every place',ic:'pin'}] },
+ { key:'form', nat:[527,843], k:.86, rep:replicaForm, hold:3.6,
+   title:['Add any','place'], sub:'Beaches, hotels, sights.',
+   calls:[{r:[.04,.135,.92,.06],txt:'Name it in seconds',ic:'pencil',at:.9,until:1.5},{r:[.04,.245,.92,.205],txt:'Kids? Stroller? Car?',ic:'baby',at:2.95}] },
+ { key:'exp', nat:[705,493], k:1.0, rep:replicaExp, hold:2.7,
+   title:['Budget,','tracked'], sub:'Costs, auto-converted.',
+   calls:[{r:[.04,.31,.92,.09],txt:'Currency converter',ic:'swap'},{r:[.03,.44,.94,.31],txt:'Totals by category',ic:'tag'}] }
+];
+let acc=2.4;
+SCREENS.forEach((S,i)=>{ S.X=i*GAP; S.a=acc; S.d=acc+S.hold; acc=S.d+1.0; S.r0=S.a-1.6; });
+const ZOOM0 = SCREENS[SCREENS.length-1].d;   // camera starts pulling back
+const MID = (SCREENS.length-1)*GAP/2;
+
+/* camera keyframes: t, x, y, scale, ease-into */
+const CAM=[{t:0,x:0,y:0,s:.8,e:'lin'}];
+SCREENS.forEach((S,i)=>{
+  CAM.push({t:S.a,x:S.X,y:0,s:1.0,e:i===0?'snap':'pan'});
+  CAM.push({t:S.d,x:S.X,y:10,s:1.07,e:'lin'});
+});
+CAM.push({t:ZOOM0+2.0,x:MID,y:0,s:.255,e:'io'},{t:30,x:MID,y:0,s:.24,e:'lin'});
+function camAt(t){
+  if(t<=CAM[0].t) return CAM[0];
+  for(let i=1;i<CAM.length;i++){
+    if(t<=CAM[i].t){ const a=CAM[i-1], b=CAM[i], u=E[b.e]((t-a.t)/(b.t-a.t));
+      return {x:lerp(a.x,b.x,u),y:lerp(a.y,b.y,u),s:lerp(a.s,b.s,u)}; }
+  }
+  return CAM[CAM.length-1];
+}
+
+/* ---------- holiday backdrop ---------- */
+const $ = id=>document.getElementById(id);
+const SVGNS='http://www.w3.org/2000/svg';
+const HORIZON=700;
+$('sea').innerHTML=`<svg width="1920" height="1080"><defs><linearGradient id="seag" x1="0" y1="0" x2="0" y2="1"><stop id="sea0" offset="0"/><stop id="sea1" offset="1"/></linearGradient></defs><rect y="${HORIZON}" width="1920" height="${1080-HORIZON}" fill="url(#seag)"/></svg>`;
+// clouds
+let cl='';
+[[100,130,1.2],[620,70,.9],[1050,180,1.4],[1500,100,1],[2100,150,1.1],[2700,80,1.3],[3300,170,1],[3900,110,1.2]].forEach(([x,y,s])=>{
+  cl+=`<g transform="translate(${x} ${y}) scale(${s})" fill="#fff" opacity=".85"><ellipse cx="0" cy="30" rx="120" ry="30"/><ellipse cx="-50" cy="12" rx="60" ry="34"/><ellipse cx="30" cy="0" rx="70" ry="40"/><ellipse cx="85" cy="18" rx="45" ry="26"/></g>`; });
+$('clouds').innerHTML=`<svg width="6000" height="400" style="overflow:visible">${cl}</svg>`;
+// far islands
+let isl='';
+for(let i=0;i<9;i++){ const x=i*620-200, h=70+((i*37)%50), w=260+((i*53)%140);
+  isl+=`<path d="M${x} ${HORIZON} C${x+w*.2} ${HORIZON-h} ${x+w*.45} ${HORIZON-h*1.1} ${x+w*.55} ${HORIZON-h*.6} C${x+w*.7} ${HORIZON-h*.95} ${x+w*.85} ${HORIZON-h*.4} ${x+w} ${HORIZON}Z" fill="#245f6e" opacity=".55"/>`; }
+$('islands').innerHTML=`<svg width="6000" height="800" style="overflow:visible">${isl}</svg>`;
+// waves
+let wv='';
+for(let r=0;r<5;r++){ let d=`M0 ${HORIZON+30+r*60}`; for(let x=0;x<=4800;x+=120) d+=` q30 ${-14-r*2} 60 0 t60 0`;
+  wv+=`<path d="${d}" fill="none" stroke="#fff" stroke-opacity="${.5-r*.07}" stroke-width="${3+r*.6}" stroke-linecap="round"/>`; }
+$('waves').innerHTML=`<svg width="5000" height="1080" style="overflow:visible">${wv}</svg>`;
+// palms
+function palm(x,base,sc,flip,i){
+  const f=[[-150,-20,-10],[-120,-50,-28],[-70,-80,-45],[0,-90,-90],[70,-80,-135],[120,-50,-152],[150,-20,-170]];
+  return `<g transform="translate(${x} ${base}) scale(${flip*sc} ${sc})">
+    <path d="M0 0 C12 -120 -10 -230 25 -330 L45 -326 C10 -230 32 -120 22 0Z" fill="#3b2a45"/>
+    <g class="crown" data-i="${i}" transform="translate(35 -328)">${[[-60,-20],[-30,-50],[10,-60],[50,-40],[75,-6],[-85,10],[100,25]].map(([ex,ey],k)=>
+      `<path d="M0 0 C${ex*.4} ${ey-40} ${ex*.8} ${ey-30} ${ex*1.3} ${ey+40} C${ex*.8} ${ey+5} ${ex*.4} ${ey-5} 0 8Z" fill="${k%2?'#1c6b4f':'#238a5f'}" transform="scale(1.6)"/>`).join('')}
+      <circle cx="-4" cy="10" r="9" fill="#5a3a2a"/><circle cx="12" cy="14" r="9" fill="#5a3a2a"/></g></g>`; }
+let pm=''; [[60,1080,1,1],[640,1080,.7,-1],[1500,1080,1.05,1],[2300,1080,.75,-1],[3200,1080,1,1],[4100,1080,.8,-1],[4900,1080,1,1]].forEach((p,i)=>pm+=palm(p[0],p[1]+10,p[2]*.9,p[3],i));
+$('palms').innerHTML=`<svg width="5600" height="1080" style="overflow:visible">${pm}</svg>`;
+const crowns=[...document.querySelectorAll('.crown')];
+const crownBase=crowns.map(c=>c.getAttribute('transform'));
+
+const SKY=[ // t, top, mid, horizon, sea top, sea bottom, sun colour, sun y
+  [0,  '#1f8fe6','#7fd0f5','#ffeab5','#19b3c9','#0b7ba2','#fff4c2',170],
+  [13, '#3f86d9','#ffc27a','#ffe3a0','#12a1b0','#0a6e8e','#ffe08a',360],
+  [26, '#3a2a7e','#e0597b','#ff9d5a','#17608a','#0a2f5e','#ffb45a',640]
+];
+function skyAt(t){
+  let a=SKY[0],b=SKY[1]; if(t>SKY[1][0]){a=SKY[1];b=SKY[2];}
+  const u=clamp((t-a[0])/(b[0]-a[0]));
+  return {top:mix(a[1],b[1],u).replace('#',''),mid:mix(a[2],b[2],u),hor:mix(a[3],b[3],u),s0:mix(a[4],b[4],u),s1:mix(a[5],b[5],u),sun:mix(a[6],b[6],u),sy:lerp(a[7],b[7],u)};
+}
+const skyEl=$('sky'), sunEl=$('sun');
+
+/* ---------- world ---------- */
+const world=$('world');
+const routeSvg=document.createElementNS(SVGNS,'svg'); routeSvg.setAttribute('class','lines'); world.appendChild(routeSvg);
+const routeY=x=>470+Math.sin(x/170)*30;
+const LASTX=SCREENS[SCREENS.length-1].X;
+let dd=''; for(let x=-600;x<=LASTX+1800;x+=20) dd+=(x===-600?'M':'L')+x+' '+routeY(x).toFixed(1);
+const routePath=document.createElementNS(SVGNS,'path');
+routePath.setAttribute('d',dd); routePath.setAttribute('fill','none'); routePath.setAttribute('stroke','#fff'); routePath.setAttribute('stroke-width','5');
+routePath.setAttribute('stroke-dasharray','4 20'); routePath.setAttribute('stroke-linecap','round'); routePath.setAttribute('opacity','.85');
+routeSvg.appendChild(routePath);
+const plane=document.createElement('div');
+plane.style.cssText='position:absolute;width:84px;height:84px;margin:-42px 0 0 -42px;z-index:1;filter:drop-shadow(0 8px 10px rgba(0,0,0,.3))';
+plane.innerHTML=`<svg viewBox="0 0 24 24" width="84" height="84" style="stroke:#fff;fill:#F4786A;stroke-width:1.2;stroke-linejoin:round"><g transform="rotate(45 12 12)">${ICON.plane}</g></svg>`;
+world.appendChild(plane);
+const linesSvg=document.createElementNS(SVGNS,'svg'); linesSvg.setAttribute('class','lines'); linesSvg.style.zIndex=6; world.appendChild(linesSvg);
+
+SCREENS.forEach((S,i)=>{
+  S.w=S.nat[0]*S.k; S.h=S.nat[1]*S.k;
+  const el=document.createElement('div'); el.className='screen'; S.el=el;
+  el.innerHTML=`<img class="logo" src="logo.png" alt=""><div class="inner" style="width:${S.nat[0]}px;height:${S.nat[1]}px;transform:scale(${S.k})">${S.rep()}</div><img class="shot" src="shots/${S.key}.png" alt="">`;
+  const shot=el.querySelector('.shot');
+  shot.onload=()=>{shot.style.display='block'; el.querySelector('.inner').style.display='none';};
+  world.appendChild(el);
+  S.logo=el.querySelector('.logo'); S.inner=el.querySelector('.inner');
+  // title
+  const tl=document.createElement('div'); tl.className='title';
+  tl.style.left=(S.X-S.w/2-90-560)+'px'; tl.style.top='-210px'; tl.style.zIndex=7;
+  tl.innerHTML=`<div class="num">0${i+1} / 0${SCREENS.length}</div><div class="h">${S.title.map(l=>l.split(' ').map(w=>`<span class="w">${w}</span>`).join('')+'<br>').join('')}</div><div class="sub">${S.sub}</div>`;
+  world.appendChild(tl); S.words=[...tl.querySelectorAll('.w')]; S.numEl=tl.querySelector('.num'); S.subEl=tl.querySelector('.sub');
+  // callouts
+  const n=S.calls.length, ys=n===3?[-200,0,200]:n===2?[-110,110]:[0];
+  S.calls.forEach((c,j)=>{
+    c.t=S.a+(c.at!==undefined?c.at:OFF[j]); c.u=c.until!==undefined?S.a+c.until:99;
+    const rx=-S.w/2+c.r[0]*S.w, ry=-S.h/2+c.r[1]*S.h, rw=c.r[2]*S.w, rh=c.r[3]*S.h;
+    const ring=document.createElement('div'); ring.className='ring';
+    ring.style.cssText+=`left:${S.X+rx-6}px;top:${ry-6}px;width:${rw+12}px;height:${rh+12}px;z-index:6`;
+    world.appendChild(ring); c.ring=ring;
+    const px=S.X+S.w/2+130, py=ys[j];
+    const pill=document.createElement('div'); pill.className='pill';
+    pill.style.left=px+'px'; pill.style.top=(py-42)+'px'; pill.style.zIndex=7;
+    pill.innerHTML=`<span class="ic">${svgI(c.ic)}</span>${c.txt}`;
+    world.appendChild(pill); c.pill=pill;
+    const x1=S.X+rx+rw+6, y1=ry+rh/2, x2=px-8, y2=py, mx=(x1+x2)/2;
+    const path=document.createElementNS(SVGNS,'path');
+    path.setAttribute('d',`M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`);
+    path.setAttribute('fill','none'); path.setAttribute('stroke','#FFD36B'); path.setAttribute('stroke-width','4');
+    path.setAttribute('stroke-linecap','round'); path.setAttribute('pathLength','1'); path.setAttribute('stroke-dasharray','1');
+    linesSvg.appendChild(path); c.path=path;
+  });
+});
+const S_ = Object.fromEntries(SCREENS.map(s=>[s.key,s]));
+
+/* ---------- render(t): a pure function of time, so scrubbing is seamless ---------- */
+const veil=$('veil'), pillEl=$('pill'), pillTxt=$('pillTxt'), pillLogo=$('pillLogo'), ctaTag=$('ctaTag'), ctaUrl=$('ctaUrl'), kicker=$('kicker');
+const fmt=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const TYPED='מפלי ארסה';
+
+function render(t){
+  const cam=camAt(t);
+  world.style.transform=`translate(${-cam.x*cam.s}px,${-cam.y*cam.s}px) scale(${cam.s})`;
+
+  /* holiday backdrop: sky shifts from morning to sunset */
+  const k=skyAt(t);
+  skyEl.style.background=`linear-gradient(180deg,#${k.top} 0%,${k.mid} 55%,${k.hor} 100%)`;
+  $('sea0').setAttribute('stop-color',k.s0); $('sea1').setAttribute('stop-color',k.s1);
+  sunEl.style.background=`radial-gradient(circle,${k.sun} 0 36%,${k.sun}aa 38%,${k.sun}00 70%)`;
+  sunEl.style.transform=`translate(${-cam.x*.03}px,${k.sy-130}px)`;
+  $('clouds').style.transform=`translate(${-cam.x*.14-t*14}px,0)`;
+  $('islands').style.transform=`translate(${-cam.x*.07}px,0)`;
+  $('waves').style.transform=`translate(${-((cam.x*.3+t*46)%240)-0}px,0)`;
+  $('palms').style.transform=`translate(${-cam.x*.55}px,0)`;
+  crowns.forEach((c,i)=>c.setAttribute('transform',crownBase[i]+` rotate(${Math.sin(t*1.4+i)*2.5})`));
+  kicker.style.opacity=seg(t,.2,.9)*(1-seg(t,2.0,2.8)); kicker.style.transform=`translateY(${(1-E.snap(seg(t,.2,1)))*30}px)`;
+
+  const globalFade=1-seg(t,ZOOM0-.5,ZOOM0+.7);
+  const dim=seg(t,ZOOM0+1.4,ZOOM0+2.8);
+
+  // plane + route thread
+  const px = t<ZOOM0 ? cam.x+260+Math.sin(t*1.1)*90 : LASTX+260+Math.sin(ZOOM0*1.1)*90+(t-ZOOM0)*750;
+  const py=routeY(px), slope=Math.atan2(routeY(px+5)-routeY(px-5),10);
+  plane.style.transform=`translate(${px}px,${py}px) rotate(${slope*57.3}deg)`;
+  routePath.setAttribute('stroke-dashoffset',(-t*60).toFixed(1));
+
+  SCREENS.forEach((S,i)=>{
+    const appear=E.back(seg(t,S.r0,S.r0+.55));
+    const m=E.snap(seg(t,S.r0+.45,S.r0+1.7));
+    const w=lerp(150,S.w,m), h=lerp(150,S.h,m), rad=lerp(75,40,m);
+    const e=S.el;
+    e.style.width=w+'px'; e.style.height=h+'px'; e.style.borderRadius=rad+'px';
+    e.style.left=(S.X-w/2)+'px'; e.style.top=(-h/2)+'px';
+    e.style.transform=`scale(${appear})`; e.style.opacity=(1-.5*dim);
+    S.logo.style.opacity=1-seg(m,.05,.45);
+    S.inner.style.opacity=seg(m,.35,.75);
+    S.inner.style.left=((w-S.nat[0]*S.k)/2)+'px'; S.inner.style.top=((h-S.nat[1]*S.k)/2)+'px';
+
+    const textFade=Math.min(globalFade,1-seg(t,S.d-.1,S.d+.6));
+    const t0=i===0?S.r0+.35:S.a-.45;
+    S.words.forEach((el,kk)=>{ const u=E.back(seg(t,t0+kk*.12,t0+.8+kk*.12));
+      el.style.opacity=clamp(u*1.6)*textFade; el.style.transform=`translateY(${(1-u)*70}px) rotate(${(1-u)*-3}deg)`; });
+    const us=E.snap(seg(t,t0+.45,t0+1.2));
+    S.numEl.style.opacity=us*textFade; S.subEl.style.opacity=us*textFade; S.subEl.style.transform=`translateY(${(1-us)*30}px)`;
+
+    S.calls.forEach(c=>{
+      const u=E.back(seg(t,c.t,c.t+.6)), l=E.snap(seg(t,c.t+.05,c.t+.7)); const gone=1-seg(t,c.u,c.u+.35); const tf=textFade*gone;
+      c.ring.style.opacity=clamp(u*2)*tf; c.ring.style.transform=`scale(${lerp(1.5,1,u)})`;
+      c.ring.style.boxShadow=`0 0 0 ${6+Math.sin(t*5)*3}px rgba(255,211,107,.25),0 0 ${24+Math.sin(t*5)*10}px rgba(255,211,107,.8)`;
+      c.path.style.strokeDashoffset=(1-l); c.path.style.opacity=tf;
+      c.pill.style.opacity=clamp(u*2)*tf; c.pill.style.transform=`translateX(${(1-u)*-80}px) scale(${lerp(.6,1,u)})`;
+    });
+  });
+
+  /* ---- living details inside each screen ---- */
+  const H=S_.home, D=S_.dash, R=S_.route, M=S_.map, F=S_.form, X=S_.exp;
+  // home: city chips step through, countdown ticks down, button pulses
+  const ai = t<H.a+1.7?0:Math.min(5,Math.floor((t-(H.a+1.7))/.4));
+  H.el.querySelectorAll('.chip').forEach((c,kk)=>{ const on=kk===ai; c.style.background=on?'#fff':'rgba(80,70,150,.7)'; c.style.color=on?'#1b1040':'#fff'; });
+  const b1=$('s1btn'); if(b1) b1.style.transform=`scale(${1+.04*Math.max(0,Math.sin((t-H.a-2.4)*6))*seg(t,H.a+2.4,H.d)})`;
+  const cnt=$('cnt'); if(cnt) cnt.textContent=t<H.a+.7?'50':'49';
+  // dashboard: chart draws, currency cycles, route line draws, pins drop
+  const cc=$('chartclip'); if(cc) cc.style.width=(E.snap(seg(t,D.a+.2,D.a+1.1))*100)+'%';
+  const ci=t<D.calls[0].t?0:Math.floor((t-D.calls[0].t)/.55)%3;
+  D.el.querySelectorAll('.cur').forEach((c,kk)=>{ const on=kk===ci; c.style.background=on?'#fff':'transparent'; c.style.color=on?'#1b1040':'#fff'; });
+  const sym=$('curSym'); if(sym) sym.textContent=['₪','฿','$'][ci];
+  [['dpin2',D.a+1.2],['dpin3',D.a+1.5]].forEach(([id,at])=>{ const p=$(id); if(!p)return; const u=E.back(seg(t,at,at+.7));
+    p.style.transform=`rotate(-45deg) translateY(${(1-u)*-100}px) scale(${u})`; p.style.opacity=clamp(u*3); });
+  const dl=$('dashLine'); if(dl) dl.style.strokeDashoffset=1-E.snap(seg(t,D.a+1.7,D.a+2.5));
+  // route: cards slide in
+  R.el.querySelectorAll('.tcard').forEach((c,kk)=>{ const u=E.snap(seg(t,R.r0+1+kk*.18,R.r0+1.9+kk*.18)); c.style.transform=`translateY(${(1-u)*60}px)`; c.style.opacity=u; });
+  // map: pins drop, route draws
+  [['pin1',M.a+.2],['pin2',M.a+.9],['pin3',M.a+1.2]].forEach(([id,at])=>{ const p=$(id); if(!p)return;
+    const u=E.back(seg(t,at,at+.7)); p.style.transform=`rotate(-45deg) translateY(${(1-u)*-120}px) scale(${u})`; p.style.opacity=clamp(u*3); });
+  const ml=$('mapLine'); if(ml) ml.style.strokeDashoffset=1-E.snap(seg(t,M.a+1.5,M.a+2.3));
+  ['lb2','lb3'].forEach((id,kk)=>{ const l=$(id); if(l) l.style.opacity=seg(t,M.a+1.3+kk*.3,M.a+1.8+kk*.3); });
+  // form: type the name, scroll down, flip toggles
+  const n=Math.floor(seg(t,F.a+.35,F.a+1.0)*TYPED.length);
+  const ft=$('ftype'); if(ft){ ft.textContent=n?TYPED.slice(0,n):'למשל: מפלי ארסה'; ft.style.color=n?'#fff':'#8d87b8'; }
+  const fc=$('fcaret'); if(fc) fc.style.opacity=(t>F.a+.3&&t<F.a+1.8&&Math.floor(t*3)%2===0)?1:0;
+  const fs=$('fscroll'); if(fs) fs.style.transform=`translateY(${-879*E.io(seg(t,F.a+1.5,F.a+2.8))}px)`;
+  [['tg2',F.a+3.05],['tg3',F.a+3.3]].forEach(([id,at])=>{ const g=$(id); if(!g)return; const on=t>at;
+    g.style.background=on?'#9a82ff':'#4a3d8f'; g.firstChild.style.left=on?'3px':'21px'; });
+  const sv=$('fsave'); if(sv) sv.style.background=`rgba(244,120,106,${.5+.5*seg(t,F.a+1.0,F.a+1.2)})`;
+  // expenses: count up
+  const f=E.snap(seg(t,X.a+.7,X.a+2.4));
+  const tot=$('tot'), tot2=$('tot2'), bar=$('bar');
+  if(tot){ tot.textContent=fmt(14714.14*f); tot2.textContent=fmt(14714.14*f); bar.style.width=(f*100)+'%'; }
+  const conv=$('conv'); if(conv) conv.style.transform=`scale(${1+.03*Math.max(0,Math.sin((t-X.a-.85)*7))*seg(t,X.a+.85,X.a+1.8)})`;
+
+  /* closing: dim the world, logo circle morphs into the CTA pill */
+  const C0=ZOOM0+1.6;
+  veil.style.opacity=seg(t,C0-.4,C0+.6);
+  const c1=E.back(seg(t,C0+.2,C0+.9)), c2=E.snap(seg(t,C0+.9,C0+2.1));
+  pillEl.style.width=lerp(170,980,c2)+'px'; pillEl.style.transform=`scale(${c1})`; pillEl.style.opacity=clamp(c1*3);
+  pillLogo.style.opacity=1-seg(c2,.1,.5);
+  pillTxt.style.opacity=seg(c2,.55,.95); pillTxt.style.transform=`translateX(${(1-seg(c2,.55,1))*40}px)`;
+  const tg=E.snap(seg(t,C0+.6,C0+1.5)); ctaTag.style.opacity=tg; ctaTag.style.transform=`translateY(${(1-tg)*40}px)`;
+  const ur=E.snap(seg(t,C0+2.0,C0+2.8)); ctaUrl.style.opacity=ur; ctaUrl.style.transform=`translateY(${(1-ur)*24}px)`;
+  pillEl.style.boxShadow=`0 26px ${60+26+Math.sin(t*6)*14}px rgba(244,120,106,.55)`;
+}
+
+/* ---------- player ---------- */
+let t=0, playing=false, last=0;
+const seek=$('seek'), timeEl=$('time'), playBtn=$('play'), playTxt=$('playTxt'), ico=$('icoPlay');
+const PLAY='<polygon points="6 4 20 12 6 20 6 4" fill="#fff"/>', PAUSE='<rect x="6" y="4" width="4" height="16" fill="#fff"/><rect x="14" y="4" width="4" height="16" fill="#fff"/>';
+const mm=s=>`${Math.floor(s/60)}:${(s%60).toFixed(1).padStart(4,'0')}`;
+function paint(){ render(t); seek.value=t/DUR*30000; seek.style.setProperty('--p',(t/DUR*100)+'%'); timeEl.textContent=`${mm(t)} / 0:30`;
+  ico.innerHTML=playing?PAUSE:PLAY; playTxt.textContent=playing?'Pause':(t>=DUR?'Replay':'Play'); }
+function tick(now){ if(playing){ t=Math.min(DUR,t+(now-last)/1000); if(t>=DUR) playing=false; paint(); } last=now; requestAnimationFrame(tick); }
+function toggle(){ if(!playing && t>=DUR) t=0; playing=!playing; last=performance.now(); paint(); }
+playBtn.onclick=toggle;
+$('restart').onclick=()=>{ t=0; playing=true; last=performance.now(); paint(); };
+seek.oninput=()=>{ t=seek.value/30000*DUR; paint(); };
+addEventListener('keydown',e=>{ if(e.code==='Space'){e.preventDefault();toggle();} if(e.key==='r'||e.key==='R'){$('restart').click();} });
+$('stage').addEventListener('click',toggle);
+function fit(){
+  const vp=$('viewport'); const s=Math.min(vp.clientWidth/1920, vp.clientHeight/1080);
+  $('stage').style.transform=`scale(${s})`;
+  $('stage').style.margin=`${-(1080*(1-s))/2}px ${-(1920*(1-s))/2}px`;
+}
+addEventListener('resize',fit); fit();
+const q=new URLSearchParams(location.search).get('t'); if(q) t=clamp(parseFloat(q),0,DUR);
+paint(); requestAnimationFrame(tick);
+if(!q){ setTimeout(()=>{ if(t===0){ playing=true; last=performance.now(); paint(); } },400); }
+</script>
+</body>
+</html>
