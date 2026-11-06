@@ -14,8 +14,8 @@ import { getTripTypes } from "@/lib/trip-types";
 /**
  * Home page, built on The Blonde Abroad's section order
  * (see .claude/skills/travel-blog-inspiration, section 0):
- *   hero collage → featured trips → trip types → postcard about →
- *   destinations map → newsletter
+ *   hero → destinations map → featured trips → trip types →
+ *   postcard about → newsletter
  * Bands alternate cream / white; separation is tint and a stitched edge,
  * not rules.
  */
@@ -28,6 +28,8 @@ export default function HomePage() {
   return (
     <>
       <HomeHero />
+
+      <Destinations />
 
       {/* FEATURED TRIPS */}
       <section
@@ -83,8 +85,6 @@ export default function HomePage() {
       )}
 
       <PostcardAbout countries={COUNTRIES.length} trips={trips.length} />
-
-      <Destinations />
 
       {/* NEWSLETTER */}
       <section
