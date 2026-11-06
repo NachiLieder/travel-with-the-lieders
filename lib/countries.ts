@@ -24,11 +24,26 @@ export type Country = {
     | "Asia"
     | "Africa"
     | "North America"
+    | "Caribbean"
     | "South America"
     | "Oceania";
+  /** Approximate visual centre, used to place the polaroid marker on the world map */
+  lat: number;
+  lng: number;
   /** Brand accent for the country's page header */
   themeColor?: string;
 };
+
+/** Hebrew labels for region groups, in the order they are listed. */
+export const REGIONS: { id: Country["continent"]; heName: string }[] = [
+  { id: "Africa", heName: "אפריקה" },
+  { id: "Asia", heName: "אסיה" },
+  { id: "Caribbean", heName: "האיים הקריביים" },
+  { id: "Europe", heName: "אירופה" },
+  { id: "North America", heName: "צפון אמריקה" },
+  { id: "Oceania", heName: "אוקיאניה" },
+  { id: "South America", heName: "דרום אמריקה" },
+];
 
 /**
  * Visited countries. Add a new entry when a trip in a new country is published.
@@ -41,7 +56,9 @@ export const COUNTRIES: Country[] = [
     enName: "Romania",
     slug: "romania",
     continent: "Europe",
-    themeColor: "#7a4f2e",
+    lat: 45.9,
+    lng: 24.9,
+    themeColor: "#2f6f6a",
   },
   {
     iso2: "CZ",
@@ -50,7 +67,9 @@ export const COUNTRIES: Country[] = [
     enName: "Czech Republic",
     slug: "czech-republic",
     continent: "Europe",
-    themeColor: "#5b7a4e",
+    lat: 49.8,
+    lng: 15.5,
+    themeColor: "#3f7a5e",
   },
   {
     iso2: "PT",
@@ -59,7 +78,9 @@ export const COUNTRIES: Country[] = [
     enName: "Portugal",
     slug: "portugal",
     continent: "Europe",
-    themeColor: "#c66b4a",
+    lat: 39.5,
+    lng: -8.0,
+    themeColor: "#1a7790",
   },
   {
     iso2: "IT",
@@ -68,7 +89,9 @@ export const COUNTRIES: Country[] = [
     enName: "Italy",
     slug: "italy",
     continent: "Europe",
-    themeColor: "#4f7da3",
+    lat: 42.8,
+    lng: 12.5,
+    themeColor: "#52669f",
   },
   {
     iso2: "DO",
@@ -76,8 +99,10 @@ export const COUNTRIES: Country[] = [
     heName: "הרפובליקה הדומיניקנית",
     enName: "Dominican Republic",
     slug: "dominican-republic",
-    continent: "North America",
-    themeColor: "#e0a93f",
+    continent: "Caribbean",
+    lat: 18.9,
+    lng: -70.2,
+    themeColor: "#b8803a",
   },
 ];
 
@@ -90,3 +115,11 @@ export const getCountryByIsoNum = (n: string) => byIsoNum.get(n);
 export const getCountryBySlug = (slug: string) => bySlug.get(slug);
 
 export const VISITED_ISO_NUMS = new Set(COUNTRIES.map((c) => c.isoNum));
+
+/** Countries grouped by region, only regions that have at least one country. */
+export function getCountriesByRegion() {
+  return REGIONS.map((r) => ({
+    ...r,
+    countries: COUNTRIES.filter((c) => c.continent === r.id),
+  })).filter((r) => r.countries.length > 0);
+}

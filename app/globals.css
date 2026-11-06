@@ -2,48 +2,95 @@
 
 /* ============================================================
    Brand tokens — Travel With The Lieders
-   Warm, editorial, family-travel feel
+   Deep ocean turquoise. See .claude/skills/site-design-system/
    ============================================================ */
 
 :root {
-  /* Surfaces */
-  --color-bg: #faf7f2;        /* warm off-white */
-  --color-bg-elev: #ffffff;
-  --color-ink: #1a1612;       /* deep warm ink */
-  --color-ink-soft: #4a4339;
-  --color-ink-muted: #8a8275;
-  --color-line: #ede6da;
+  /* Surfaces — cool, near-white with a blue cast */
+  --color-bg: #f4f9fb;        /* page background */
+  --color-bg-elev: #ffffff;   /* cards, raised panels */
+  --color-bg-sunk: #e8f2f6;   /* wells, inset areas, alternating sections */
+
+  /* Ink */
+  --color-ink: #0c1f2a;       /* deep sea navy */
+  --color-ink-soft: #35535f;
+  --color-ink-muted: #56747f;
+  --color-line: #d4e6ed;
 
   /* Brand */
-  --color-accent: #c66b4a;          /* terracotta */
-  --color-accent-soft: #f4d9cd;
-  --color-accent-ink: #7a3b22;
-  --color-leaf: #5b7a4e;            /* nature green for "best for nature" */
-  --color-sun: #e0a93f;              /* warm sun yellow */
-  --color-ocean: #4f7da3;            /* ocean blue */
+  --color-accent: #097785;          /* primary turquoise — passes AA as text and as a fill */
+  --color-accent-hover: #065f6b;
+  --color-accent-soft: #cdeef1;
+  --color-accent-ink: #06525a;
+
+  /* Depth — heroes and immersive panels only, never body content */
+  --color-deep: #072a38;
+  --color-deep-elev: #0d3b4d;
+
+  /* Supporting hues — meaning only, never mood */
+  --color-lagoon: #3fc9c2;          /* highlights, glow */
+  --color-leaf: #4f9d7a;            /* nature, "what worked" */
+  --color-sun: #e8b96b;             /* ratings, warmth */
+  --color-sand: #e8b96b;            /* alias of sun, semantic name */
+  --color-coral: #e4705e;           /* warnings, "what was hard" */
+  --color-ocean: #2f7fa8;           /* secondary blue */
+
+  /* Boutique-postcard neutrals (Blonde Abroad structure, turquoise palette) */
+  --color-cream: #f8f4ec;           /* warm band background, chips */
+  --color-paper: #f1ede3;           /* card mat / postcard parchment */
+  --color-paper-cool: #eaf3f2;      /* faint turquoise-tinted mat */
+  --color-hair: #e3ddd0;            /* 1px ring around mats, hairlines */
+  --color-accent-tint: #8fcfd0;     /* decorative only — numbers, diamonds, arrows (the "tan") */
+  --color-script: #3f9ea3;          /* script accent word, large display only (>= 56px) */
 
   /* Map */
-  --map-visited: #c66b4a;
-  --map-visited-hover: #a84e2e;
-  --map-unvisited: #e5ddcf;
-  --map-stroke: #faf7f2;
+  --map-visited: #097785;
+  --map-visited-hover: #065f6b;
+  --map-unvisited: #dbe9ef;
+  --map-stroke: #f4f9fb;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 150ms;
+  --dur-base: 300ms;
+  --dur-slow: 550ms;
+
+  /* Elevation — cool-tinted, never grey */
+  --shadow-card: 0 1px 2px rgb(12 31 42 / 0.04), 0 8px 24px -12px rgb(12 31 42 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(12 31 42 / 0.05), 0 20px 40px -16px rgb(14 154 167 / 0.28);
 }
 
 @theme inline {
   --color-bg: var(--color-bg);
   --color-bg-elev: var(--color-bg-elev);
+  --color-bg-sunk: var(--color-bg-sunk);
   --color-ink: var(--color-ink);
   --color-ink-soft: var(--color-ink-soft);
   --color-ink-muted: var(--color-ink-muted);
   --color-line: var(--color-line);
   --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
   --color-accent-soft: var(--color-accent-soft);
   --color-accent-ink: var(--color-accent-ink);
+  --color-deep: var(--color-deep);
+  --color-deep-elev: var(--color-deep-elev);
+  --color-lagoon: var(--color-lagoon);
   --color-leaf: var(--color-leaf);
   --color-sun: var(--color-sun);
+  --color-sand: var(--color-sand);
+  --color-coral: var(--color-coral);
   --color-ocean: var(--color-ocean);
+  --color-cream: var(--color-cream);
+  --color-paper: var(--color-paper);
+  --color-paper-cool: var(--color-paper-cool);
+  --color-hair: var(--color-hair);
+  --color-accent-tint: var(--color-accent-tint);
+  --color-script: var(--color-script);
   --font-sans: var(--font-heebo), system-ui, -apple-system, sans-serif;
   --font-display: var(--font-frank-ruhl), Georgia, serif;
+  --font-script: var(--font-allura), "Playpen Sans Hebrew", cursive;
+  --font-script-he: var(--font-playpen), var(--font-allura), cursive;
 }
 
 html {
@@ -85,9 +132,199 @@ h1, h2, h3 {
   animation: kenBurns 18s ease-out forwards;
 }
 
+/* ============================================================
+   Surface & depth utilities
+   ============================================================ */
+
+/* Resting card surface; lifts and glows turquoise on hover. */
+.card-surface {
+  box-shadow: var(--shadow-card);
+  transition: transform var(--dur-base) var(--ease-out),
+              box-shadow var(--dur-base) var(--ease-out);
+}
+
+.card-surface:hover {
+  box-shadow: var(--shadow-lift);
+}
+
+/*
+  Reading surface for blocks that carry small text over the site backdrop.
+  Must stay effectively opaque: measured against the backdrop's darkest region,
+  --color-ink-muted and --color-accent only clear 4.5:1 at ≥98% opacity, so a
+  translucent panel is not an option here. See the design-system skill.
+*/
+.content-surface {
+  background-color: var(--color-bg);
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+
+/* Full-width variant — no rounding, for the footer and other edge-to-edge bands. */
+.content-surface-flush {
+  background-color: var(--color-bg);
+}
+
+/* Ambient glow — sits behind a section heading or featured card. */
+.glow-ambient {
+  background: radial-gradient(
+    60% 50% at 50% 0%,
+    color-mix(in oklab, var(--color-lagoon) 22%, transparent) 0%,
+    transparent 70%
+  );
+}
+
+/* Depth scrim — over hero photos so white text stays readable. */
+.scrim-deep {
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--color-deep) 88%, transparent) 0%,
+    color-mix(in oklab, var(--color-deep) 35%, transparent) 45%,
+    transparent 100%
+  );
+}
+
+/* ============================================================
+   Boutique-postcard system (Blonde Abroad structure).
+   Quiet, flat, square-cornered, hairline-ringed. See the
+   travel-blog-inspiration skill, section 0.
+   ============================================================ */
+
+/* Own grain: tiny inline SVG noise, no copied imagery. */
+:root {
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.45  0 0 0 0 0.4  0 0 0 0 0.3  0 0 0 0.07 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Matted print: paper grain, 5px transparent border, 1px hairline ring. */
+.paper-mat {
+  background-color: var(--color-paper);
+  background-image: var(--grain);
+  border: 5px solid transparent;
+  box-shadow: 0 0 0 1px var(--color-hair);
+}
+
+.paper-panel {
+  background-color: var(--color-paper);
+  background-image: var(--grain);
+}
+
+/* Stitched zig-zag bottom edge */
+.stitch-edge {
+  position: relative;
+}
+.stitch-edge::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 6px;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0 3px,
+    var(--color-hair) 3px 4px
+  );
+  opacity: 0.9;
+}
+
+/* Two-voice heading: big script word + thin tracked serif phrase. */
+.two-voice {
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-soft);
+  line-height: 1.1;
+}
+.two-voice .script {
+  font-family: var(--font-script);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--color-script);
+  font-size: 2.6em;
+  line-height: 0.6;
+  display: inline-block;
+  vertical-align: baseline;
+  margin-inline: 0.15em;
+}
+.two-voice .script-he {
+  font-family: var(--font-script-he);
+  font-weight: 300;
+  letter-spacing: 0;
+  color: var(--color-script);
+  font-size: 1.9em;
+  line-height: 0.8;
+  display: inline-block;
+  margin-inline: 0.12em;
+}
+
+/* Nav / label links: small, tracked, quick color shift. */
+.nav-link {
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-soft);
+  transition: color 100ms ease-in-out;
+}
+.nav-link:hover,
+.nav-link[aria-current="page"],
+.nav-link[aria-expanded="true"] {
+  color: var(--color-accent);
+}
+
+/* Flat boutique button (square corners, tracked label). */
+.btn-flat {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  color: #fff;
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  transition: background-color var(--dur-base) var(--ease-out),
+              color var(--dur-base) var(--ease-out);
+}
+.btn-flat:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+.btn-flat-outline {
+  background: transparent;
+  color: var(--color-accent);
+}
+.btn-flat-outline:hover {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+/* Quick image zoom inside an overflow-hidden frame. */
+.zoom-frame { overflow: hidden; }
+.zoom-frame > img,
+.zoom-frame > .zoom-img {
+  transition: transform 500ms var(--ease-out);
+}
+.group:hover .zoom-frame > img,
+.group:hover .zoom-frame > .zoom-img,
+.zoom-frame:hover > img {
+  transform: scale(1.03);
+}
+
 /* Smooth tap highlight removal */
 * {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================================
+   Reduced motion — content appears instantly and fully.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* RTL-aware focus ring */

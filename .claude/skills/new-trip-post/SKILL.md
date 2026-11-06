@@ -82,7 +82,16 @@ Run a focused interview using the AskUserQuestion tool. Group into 4 questions m
 
 Build the MDX following the **exact 15-section structure** from the project's `docs/PLAN.md` §6 (and matched in the Romania reference). Use these MDX components, all of which are wired into the renderer:
 
-- `<DayCard day={N} title="...">...</DayCard>` — one per day of the itinerary
+- `<DayCard day="N" title="...">...</DayCard>` — one per day of the itinerary
+
+  **Always use quoted string attributes, never `{...}` expressions.** The MDX parser strips expression attributes in this project's Hebrew/RTL files, and it fails silently — the prop simply arrives `undefined`. Write `day="3"`, not `day={3}`, and `photos="a, b, c"`, not `photos={["a","b","c"]}`. The Dominican Republic post lost every one of its in-text photos to exactly this.
+
+  Each day's photos render **inside its card, right after the text** — that is the house layout, not a gallery dump at the end of the post. They are picked up two ways:
+
+  - **Automatic:** any gallery file whose name contains `dayN-` (e.g. `12-day3-zarnesti-canyon-hike.jpg` → day 3). Name files this way during `photos:import` and the itinerary illustrates itself. This is what Romania and Italy do.
+  - **Explicit:** `photos="needle, needle"` on the card, where each needle is a substring of the filename. Use this when filenames are not day-numbered.
+
+  After writing, check that every gallery photo lands in some day. One that matches nothing appears only in the bottom gallery.
 - `<KidsWorked>...</KidsWorked>` — the "what worked with kids" callout
 - `<KidsHard>...</KidsHard>` — the "what was hard / surprising" callout
 - `<TipBox>**Bold lead.** Body.</TipBox>` — single-tip box, use 3-5 of these in a row in the Practical Tips section

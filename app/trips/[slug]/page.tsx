@@ -14,7 +14,6 @@ import { TripHero } from "@/components/trip/TripHero";
 import { QuickFacts } from "@/components/trip/QuickFacts";
 import { ShareRow } from "@/components/trip/ShareRow";
 import { RelatedTrips } from "@/components/trip/RelatedTrips";
-import { Gallery } from "@/components/trip/Gallery";
 import {
   Photo,
   Photos,
@@ -98,7 +97,7 @@ export default async function TripPage({
         {/* ARTICLE BODY — narrow reading column; full-bleed PhotoBreaks
             escape via w-screen translate-x while everything else stays
             constrained to this width */}
-        <div className="mx-auto max-w-3xl px-5 sm:px-8 py-8 sm:py-12">
+        <div className="mx-auto max-w-3xl content-surface px-5 sm:px-8 py-8 sm:py-12 my-8">
           {country && (
             <nav
               className="text-sm text-ink-muted mb-6"
@@ -134,25 +133,10 @@ export default async function TripPage({
           </div>
         </div>
 
-        {/* GALLERY — every photo, justified rows */}
-        {gallery.length > 0 && (
-          <section className="bg-gradient-to-b from-bg via-bg-elev/50 to-bg border-y border-line">
-            <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-2">
-              <header className="max-w-3xl mx-auto text-center mb-2">
-                <p className="text-xs sm:text-sm uppercase tracking-[0.2em] text-accent font-semibold mb-2">
-                  גלריה
-                </p>
-                <h2 className="font-display text-3xl sm:text-4xl font-bold">
-                  כל התמונות מהטיול
-                </h2>
-                <p className="mt-1 text-ink-soft text-sm sm:text-base">
-                  לחצו על כל תמונה לתצוגה מלאה
-                </p>
-              </header>
-              <Gallery images={gallery} />
-            </div>
-          </section>
-        )}
+        {/* No trailing gallery: every photo belongs to the day it was taken on
+            and renders inside that DayCard. If a photo stops appearing, it
+            matched no day — fix the card's `photos` list or the filename,
+            rather than reinstating a dump at the end of the page. */}
 
         <div className="mx-auto max-w-3xl px-5 sm:px-8 py-10">
           <ShareRow title={trip.title} slug={trip.slug} />

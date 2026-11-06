@@ -1,236 +1,124 @@
 import Link from "next/link";
-import { ArrowLeft, Globe2, Mountain, Heart, Sparkles, MapPin, Calendar } from "lucide-react";
 
+import { HomeHero } from "@/components/home/HomeHero";
+import { SectionTitle } from "@/components/home/SectionTitle";
+import { TripTypeCarousel } from "@/components/home/TripTypeCarousel";
+import { PostcardAbout } from "@/components/home/PostcardAbout";
+import { Destinations } from "@/components/home/Destinations";
 import { TripCard } from "@/components/ui/TripCard";
+import { Reveal } from "@/components/ui/Reveal";
 import { getAllTrips } from "@/lib/trips";
 import { COUNTRIES } from "@/lib/countries";
+import { getTripTypes } from "@/lib/trip-types";
 
 /**
- * Family photo path. Drop a real photo at `public/family.jpg` (any reasonable
- * aspect ratio works, ~4:5 portrait is ideal) and change FAMILY_PHOTO below
- * to "/family.jpg". The placeholder ships with the repo so the layout always
- * looks complete.
+ * Home page, built on The Blonde Abroad's section order
+ * (see .claude/skills/travel-blog-inspiration, section 0):
+ *   hero collage → featured trips → trip types → postcard about →
+ *   destinations map → newsletter
+ * Bands alternate cream / white; separation is tint and a stitched edge,
+ * not rules.
  */
-const FAMILY_PHOTO = "/family-placeholder.svg";
-
 export default function HomePage() {
   const trips = getAllTrips();
+  const tiles = getTripTypes()
+    .filter((t) => t.photo)
+    .map((t) => ({ id: t.id, label: t.label, photo: t.photo as string }));
 
   return (
     <>
-      {/* ABOUT US — replaces the old hero/featured-trip combo */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-accent-soft/30 via-bg to-bg pointer-events-none" />
-        <div className="relative mx-auto max-w-6xl px-5 sm:px-8 pt-10 sm:pt-16 pb-12 sm:pb-20">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-14 items-center">
-            {/* Family photo */}
-            <div className="lg:col-span-5">
-              <div className="relative">
-                <div className="absolute -inset-3 sm:-inset-5 rounded-3xl bg-accent/15 -rotate-2" aria-hidden />
-                <div
-                  className="relative aspect-[4/5] rounded-3xl overflow-hidden bg-line shadow-xl bg-cover bg-center"
-                  style={{ backgroundImage: `url(${FAMILY_PHOTO})` }}
-                  role="img"
-                  aria-label="משפחת לידר"
-                />
-              </div>
-            </div>
+      <HomeHero />
 
-            {/* Text */}
-            <div className="lg:col-span-7">
-              <p className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-soft text-accent-ink text-sm font-semibold mb-5">
-                <Sparkles className="w-4 h-4" />
-                קצת עלינו
-              </p>
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight mb-5">
-                אנחנו <span className="text-accent">משפחת לידר</span>
-              </h1>
-              <div className="space-y-4 text-lg sm:text-xl text-ink-soft leading-relaxed">
-                <p>
-                  אירית, נחי, היילי ודניאל — ארבעה אנשים, מזוודה אחת גדולה מדי,
-                  ועולם שלם של מקומות שעוד לא ראינו.
-                </p>
-                <p>
-                  אנחנו אוהבים לטייל יחד, לגלות מקומות חדשים — קרובים ורחוקים —
-                  ולעזור לעוד משפחות לגלות עולם. הבלוג הזה הוא הדרך שלנו לארגן את
-                  כל מה שלמדנו על הדרך ולשתף אותו.
-                </p>
-                <p>
-                  אנחנו לא בלוג שיווקי. מה שאנחנו ממליצים זה מה שעשינו באמת,
-                  ומה שלא אהבנו — אנחנו אומרים.
-                </p>
-              </div>
-
-              {/* Stat row */}
-              <div className="flex flex-wrap gap-6 mt-7">
-                <Stat
-                  Icon={MapPin}
-                  value={String(COUNTRIES.length)}
-                  label="מדינות"
-                />
-                <Stat
-                  Icon={Calendar}
-                  value={String(trips.length)}
-                  label="טיולים"
-                />
-                <Stat
-                  Icon={Heart}
-                  value="2"
-                  label="ילדים בדרכים"
-                />
-              </div>
-
-              <Link
-                href="/about"
-                className="inline-flex items-center gap-1 mt-6 text-accent font-semibold hover:underline"
-              >
-                קראו עוד עלינו
-                <ArrowLeft className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* TRIP GRID — every trip, clickable */}
-      <section className="bg-bg-elev/50 py-16 sm:py-20 border-y border-line">
+      {/* FEATURED TRIPS */}
+      <section
+        aria-labelledby="featured-title"
+        className="bg-cream pt-14 pb-16 md:pb-20 stitch-edge"
+      >
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <header className="mb-10 text-center">
-            <h2 className="font-display text-3xl sm:text-5xl font-bold">
-              הטיולים שלנו
-            </h2>
-            <p className="mt-3 text-ink-soft text-lg max-w-2xl mx-auto">
-              לחצו על כל תמונה כדי לקרוא את הסיפור המלא — מסלול, טיפים, ומה
-              שעבד בשטח עם הילדים.
-            </p>
-          </header>
+          <SectionTitle script="מומלצים" id="featured-title" className="mb-8">
+            מהבלוג
+          </SectionTitle>
 
           {trips.length === 0 ? (
             <p className="text-center text-ink-soft py-12">
               עדיין לא פרסמנו טיולים. בקרוב!
             </p>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {trips.map((t) => (
-                <TripCard key={t.slug} trip={t} />
+            <div className="flex flex-wrap justify-center gap-2">
+              {trips.map((t, i) => (
+                <Reveal
+                  key={t.slug}
+                  delay={Math.min(i, 5) * 70}
+                  className="flex basis-full sm:basis-[calc(50%-4px)] lg:basis-[calc(33.333%-6px)]"
+                >
+                  <TripCard trip={t} priority={i < 3} />
+                </Reveal>
               ))}
             </div>
           )}
-        </div>
-      </section>
 
-      {/* TIPS STRIP */}
-      <section className="py-16 sm:py-20">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-center mb-3">
-            טיפים שעובדים במציאות
-          </h2>
-          <p className="text-ink-soft text-center mb-10 max-w-2xl mx-auto">
-            לא Google, לא AI — דברים שלמדנו על הדרך, בעיקר על ידי שגינו ושילמנו את המחיר.
-          </p>
-          <div className="grid sm:grid-cols-3 gap-5">
-            <TipCard
-              Icon={Globe2}
-              title="איך לבחור יעד"
-              text="לפי גילאי הילדים, אורך הטיסה, וכמה דברים אתם רוצים לעשות בכל יום."
-            />
-            <TipCard
-              Icon={Mountain}
-              title="מסלולים עם ילדים"
-              text="לתכנן פחות, לא יותר. הזמן הכי טוב בטיול הוא לרוב הזמן שלא תכננו."
-            />
-            <TipCard
-              Icon={Heart}
-              title="לארוז חכם"
-              text="מה ש'בטח נצטרך' — בדרך כלל לא. מה שלא חשבנו עליו — מציל את היום."
-            />
-          </div>
           <div className="text-center mt-10">
-            <Link
-              href="/tips"
-              className="inline-flex items-center gap-1 rounded-full bg-ink text-bg px-6 py-3 font-semibold hover:bg-accent transition-colors"
-            >
-              לכל הטיפים <ArrowLeft className="w-4 h-4" />
+            <Link href="/trips" className="btn-flat btn-flat-outline w-[200px]">
+              לכל הטיולים
             </Link>
           </div>
         </div>
       </section>
 
-      {/* NEWSLETTER CTA */}
-      <section className="py-16 sm:py-20 bg-accent text-white">
-        <div className="mx-auto max-w-3xl px-5 sm:px-8 text-center">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold mb-3">
-            לקבל את הטיולים אלינו במייל?
-          </h2>
-          <p className="text-white/90 mb-6 text-lg">
-            פעם בחודש — טיול חדש, טיפים אמיתיים, ושום ספאם. נשבעים.
+      {/* TRIP TYPES */}
+      {tiles.length > 0 && (
+        <section
+          aria-labelledby="types-title"
+          className="bg-bg-elev pt-16 pb-16 md:pb-20"
+        >
+          <SectionTitle
+            script="סוגי"
+            id="types-title"
+            className="mb-10 md:mb-14 px-5"
+          >
+            טיולים
+          </SectionTitle>
+          <TripTypeCarousel tiles={tiles} />
+        </section>
+      )}
+
+      <PostcardAbout countries={COUNTRIES.length} trips={trips.length} />
+
+      <Destinations />
+
+      {/* NEWSLETTER */}
+      <section
+        aria-labelledby="news-title"
+        className="bg-cream py-16 md:py-20"
+      >
+        <div className="mx-auto max-w-xl px-5 sm:px-8 text-center">
+          <SectionTitle script="ניוזלטר" id="news-title" className="mb-4">
+            פעם בחודש
+          </SectionTitle>
+          <p className="text-[15px] leading-7 text-ink-soft font-light mb-7">
+            טיול חדש, טיפים אמיתיים, ושום ספאם. נשבעים.
           </p>
           <form
-            className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto"
+            className="flex flex-col sm:flex-row gap-2 justify-center"
             action="#"
           >
+            <label className="sr-only" htmlFor="home-news-email">
+              המייל שלכם
+            </label>
             <input
+              id="home-news-email"
               type="email"
               required
-              placeholder="המייל שלכם"
-              className="flex-1 rounded-full px-5 py-3 text-ink bg-white outline-none focus:ring-2 focus:ring-white"
               dir="ltr"
+              placeholder="המייל שלכם"
+              className="h-[45px] flex-1 max-w-sm bg-white border border-[#ddd] px-4 text-sm text-ink placeholder:text-ink-muted outline-none focus:border-accent"
             />
-            <button
-              type="submit"
-              className="rounded-full bg-ink text-bg px-6 py-3 font-semibold hover:bg-bg hover:text-ink transition-colors"
-            >
+            <button type="submit" className="btn-flat h-[45px]">
               הצטרפו
             </button>
           </form>
         </div>
       </section>
     </>
-  );
-}
-
-function Stat({
-  Icon,
-  value,
-  label,
-}: {
-  Icon: typeof Globe2;
-  value: string;
-  label: string;
-}) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="grid place-items-center w-11 h-11 rounded-full bg-accent-soft text-accent-ink">
-        <Icon className="w-5 h-5" />
-      </div>
-      <div>
-        <div className="font-display text-2xl font-bold leading-none">
-          {value}
-        </div>
-        <div className="text-xs uppercase tracking-wider text-ink-muted mt-1">
-          {label}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TipCard({
-  Icon,
-  title,
-  text,
-}: {
-  Icon: typeof Globe2;
-  title: string;
-  text: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-line bg-bg-elev p-6 hover:shadow-md transition-shadow">
-      <div className="grid place-items-center w-12 h-12 rounded-full bg-accent-soft text-accent-ink mb-4">
-        <Icon className="w-6 h-6" />
-      </div>
-      <h3 className="font-display text-xl font-bold mb-2">{title}</h3>
-      <p className="text-ink-soft text-[15px] leading-relaxed">{text}</p>
-    </div>
   );
 }

@@ -1,57 +1,80 @@
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import type { Trip } from "@/lib/trips";
 import { getCountryByIso2 } from "@/lib/countries";
+import { tripPhoto } from "@/lib/trip-types";
 
+/**
+ * Matted-print trip card (The Blonde Abroad "feat-box", see the
+ * travel-blog-inspiration skill, section 0.5):
+ *   paper grain mat · 5px border · 1px hairline ring · near-square photo ·
+ *   2-line light serif title · white hairline · small tracked link.
+ * Calm by design: the photo eases to 1.03 and the link shifts colour.
+ */
 export function TripCard({
   trip,
-  size = "md",
+  priority = false,
 }: {
   trip: Trip;
+  priority?: boolean;
+  /** @deprecated kept so older call sites keep compiling; the layout is fixed now */
   size?: "md" | "lg";
 }) {
   const country = getCountryByIso2(trip.country);
-  const aspect = size === "lg" ? "aspect-[3/4]" : "aspect-[4/5]";
+  const photo = tripPhoto(trip);
+  const theme = country?.themeColor ?? "#097785";
 
   return (
     <Link
       href={`/trips/${trip.slug}`}
-      className="group block rounded-2xl overflow-hidden border border-line bg-bg-elev hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+      className="group flex flex-col w-full paper-mat text-center pb-5"
     >
-      <div
-        className={`${aspect} bg-line bg-cover bg-center relative overflow-hidden`}
-        style={{
-          backgroundImage: trip.coverImage
-            ? `url(${trip.coverImage})`
-            : trip.heroImage
-            ? `url(${trip.heroImage})`
-            : `linear-gradient(135deg, ${country?.themeColor ?? "#c66b4a"}66, ${country?.themeColor ?? "#c66b4a"}dd)`,
-        }}
-      >
-        {/* Subtle zoom on hover */}
-        <div className="absolute inset-0 bg-cover bg-center scale-100 group-hover:scale-105 transition-transform duration-700"
-             style={{
-               backgroundImage: trip.coverImage
-                 ? `url(${trip.coverImage})`
-                 : trip.heroImage
-                 ? `url(${trip.heroImage})`
-                 : undefined,
-             }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-ink text-xs font-bold px-3 py-1.5 rounded-full">
-          {country?.heName ?? trip.country}
-        </div>
-        <div className="absolute bottom-5 right-5 left-5 text-white">
-          <div className="text-xs uppercase tracking-wider opacity-90 font-medium">
-            {trip.year} · {trip.durationDays} ימים · גילאי {trip.kidsAges.join(", ")}
+      {/* Photo — 280:260 */}
+      <div className="zoom-frame relative mx-4 mt-5 aspect-[14/13] bg-line">
+        {photo ? (
+          <Image
+            src={photo}
+            alt=""
+            fill
+            priority={priority}
+            sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 90vw"
+            className="object-cover"
+          />
+        ) : (
+          // No photos for this trip yet: a quiet colour field, never a broken image.
+          <div
+            className="absolute inset-0 grid place-items-center"
+            style={{
+              background: `linear-gradient(135deg, ${theme}55, ${theme}cc)`,
+            }}
+          >
+            <span className="font-display font-light text-white text-2xl tracking-[0.12em]">
+              {country?.heName ?? trip.country}
+            </span>
           </div>
-          <h3 className="font-display text-2xl sm:text-3xl font-bold mt-2 leading-tight group-hover:text-accent-soft transition-colors">
-            {trip.title}
-          </h3>
-          <p className="mt-2 text-sm text-white/85 line-clamp-2 leading-relaxed">
-            {trip.excerpt}
-          </p>
-        </div>
+        )}
+      </div>
+
+      <div className="mt-4 px-7 flex-1 flex flex-col">
+        <p className="text-[11px] tracking-[0.1em] text-ink-muted leading-5">
+          <span className="block">{country?.heName ?? trip.country}</span>
+          <span className="block">
+            <bdi>{trip.year}</bdi> · {trip.durationDays} ימים · גילאי{" "}
+            <bdi>{trip.kidsAges.join(", ")}</bdi>
+          </span>
+        </p>
+        <h3 className="mt-2 pb-3 font-display font-light text-lg leading-relaxed tracking-[0.02em] text-ink-soft text-balance line-clamp-2 border-b border-white">
+          {trip.title}
+        </h3>
+        <span className="mt-auto pt-3 inline-flex items-center justify-center gap-1.5 text-xs tracking-[0.1em] text-accent group-hover:text-accent-hover transition-colors duration-100">
+          לקריאה
+          {/* Forward in Hebrew points left. */}
+          <ArrowLeft
+            className="w-3.5 h-3.5 transition-transform duration-300 group-hover:-translate-x-1"
+            aria-hidden
+          />
+        </span>
       </div>
     </Link>
   );
