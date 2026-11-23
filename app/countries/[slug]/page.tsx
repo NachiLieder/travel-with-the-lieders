@@ -33,7 +33,7 @@ export default async function CountryPage({
   if (!country) notFound();
 
   const trips = getTripsByCountry(country.iso2);
-  const themeColor = country.themeColor ?? "#c66b4a";
+  const themeColor = country.themeColor ?? "#097785";
 
   return (
     <>

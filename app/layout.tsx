@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
-import { Heebo, Frank_Ruhl_Libre } from "next/font/google";
+import {
+  Heebo,
+  Frank_Ruhl_Libre,
+  Allura,
+  Playpen_Sans_Hebrew,
+} from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { SiteBackdrop } from "@/components/layout/SiteBackdrop";
 
 const heebo = Heebo({
   variable: "--font-heebo",
@@ -15,7 +21,23 @@ const frankRuhl = Frank_Ruhl_Libre({
   variable: "--font-frank-ruhl",
   subsets: ["hebrew", "latin"],
   display: "swap",
-  weight: ["400", "500", "700", "900"],
+  weight: ["300", "400", "500", "700", "900"],
+});
+
+// Latin-only script accent (the "Lieders" signature, numerals, English words).
+const allura = Allura({
+  variable: "--font-allura",
+  subsets: ["latin"],
+  display: "swap",
+  weight: "400",
+});
+
+// Hebrew handwriting accent. Used for one short Hebrew word per section.
+const playpen = Playpen_Sans_Hebrew({
+  variable: "--font-playpen",
+  subsets: ["hebrew", "latin"],
+  display: "swap",
+  weight: ["300", "400"],
 });
 
 export const metadata: Metadata = {
@@ -43,9 +65,10 @@ export default function RootLayout({
     <html
       lang="he"
       dir="rtl"
-      className={`${heebo.variable} ${frankRuhl.variable} h-full antialiased`}
+      className={`${heebo.variable} ${frankRuhl.variable} ${allura.variable} ${playpen.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-bg text-ink">
+      <body className="min-h-full flex flex-col text-ink">
+        <SiteBackdrop />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />

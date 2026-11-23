@@ -68,7 +68,16 @@ export function DayCard({
 }: {
   day: number | string;
   title: string;
-  photos?: string[];
+  /**
+   * Explicit photo list, overriding the `dayN-` auto-match.
+   *
+   * Accepts a comma-separated string (`photos="a, b"`) as well as an array.
+   * `photos="none"` disables the grid (all photos are placed inline).
+   * Prefer the string form in MDX: expression attributes (`photos={["a"]}`)
+   * are stripped by the parser in this project's Hebrew/RTL files, which
+   * silently drops every photo — the same reason `day` is written `day="1"`.
+   */
+  photos?: string[] | string;
   _gallery?: import("./TripPhotosContext").TripPhoto[];
   children: ReactNode;
 }) {
@@ -99,12 +108,30 @@ export function DayCard({
     if (hit) consumedIds.add(hit.id);
   }
 
+  // Normalise `photos` to a list, accepting the comma-separated string form.
+  const photoNeedles: string[] | undefined = Array.isArray(photos)
+    ? photos
+    : typeof photos === "string"
+      ? photos
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : undefined;
+
+  // `photos="none"` turns the bottom grid off. Use it when every photo for the
+  // day is placed inline (<Photos>/<Photo> inside the text): the inline-photo
+  // de-duplication above cannot see through the RSC boundary, so without this
+  // each inline photo would repeat in the grid.
+  const noGrid = typeof photos === "string" && photos.trim() === "none";
+
   // 1. Explicit `photos` list wins.
   // 2. Otherwise auto-match by `dayN-` if `day` is numeric.
   // In either case, drop anything already used inline.
   const dayPhotos = (
-    photos
-      ? photos
+    noGrid
+      ? []
+      : photoNeedles && photoNeedles.length > 0
+      ? photoNeedles
           .map((needle) => {
             const m = needle.toLowerCase();
             return gallery.find(
