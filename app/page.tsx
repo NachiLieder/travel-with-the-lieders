@@ -15,7 +15,7 @@ import { getTripTypes } from "@/lib/trip-types";
  * Home page, built on The Blonde Abroad's section order
  * (see .claude/skills/travel-blog-inspiration, section 0):
  *   hero → destinations map → featured trips → trip types →
- *   postcard about → newsletter
+ *   postcard about
  * Bands alternate cream / white; separation is tint and a stitched edge,
  * not rules.
  */
@@ -85,40 +85,6 @@ export default function HomePage() {
       )}
 
       <PostcardAbout countries={COUNTRIES.length} trips={trips.length} />
-
-      {/* NEWSLETTER */}
-      <section
-        aria-labelledby="news-title"
-        className="bg-cream py-16 md:py-20"
-      >
-        <div className="mx-auto max-w-xl px-5 sm:px-8 text-center">
-          <SectionTitle script="ניוזלטר" id="news-title" className="mb-4">
-            פעם בחודש
-          </SectionTitle>
-          <p className="text-[15px] leading-7 text-ink-soft font-light mb-7">
-            טיול חדש, טיפים אמיתיים, ושום ספאם. נשבעים.
-          </p>
-          <form
-            className="flex flex-col sm:flex-row gap-2 justify-center"
-            action="#"
-          >
-            <label className="sr-only" htmlFor="home-news-email">
-              המייל שלכם
-            </label>
-            <input
-              id="home-news-email"
-              type="email"
-              required
-              dir="ltr"
-              placeholder="המייל שלכם"
-              className="h-[45px] flex-1 max-w-sm bg-white border border-[#ddd] px-4 text-sm text-ink placeholder:text-ink-muted outline-none focus:border-accent"
-            />
-            <button type="submit" className="btn-flat h-[45px]">
-              הצטרפו
-            </button>
-          </form>
-        </div>
-      </section>
     </>
   );
 }

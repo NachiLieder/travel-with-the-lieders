@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown, Home, Menu, Search } from "lucide-react";
 
-import { InstagramIcon, FacebookIcon } from "@/components/ui/BrandIcons";
+import { InstagramIcon } from "@/components/ui/BrandIcons";
+import { INSTAGRAM_URL } from "@/lib/site";
 import { SlideDownOverlay } from "@/components/layout/SlideDownOverlay";
 
 /**
@@ -37,17 +38,13 @@ export type SearchItem = {
 const UTILITY_LINKS = [
   { href: "/about", label: "קצת עלינו" },
   { href: "/tips", label: "טיפים" },
-  { href: "/newsletter", label: "ניוזלטר" },
 ];
 
 const MAIN_LINKS_BEFORE = [
   { href: "/about", label: "התחילו כאן" },
   { href: "/trips", label: "כל הטיולים" },
 ];
-const MAIN_LINKS_AFTER = [
-  { href: "/tips", label: "טיפים" },
-  { href: "/newsletter", label: "ניוזלטר" },
-];
+const MAIN_LINKS_AFTER = [{ href: "/tips", label: "טיפים" }];
 
 // Deterministic "torn paper" edge so server and client render the same path.
 const TORN_PATH = (() => {
@@ -137,18 +134,13 @@ export function HeaderShell({
                 </button>
                 <div className="flex items-center gap-3.5 pb-3 text-ink-muted">
                   <a
-                    href="https://instagram.com"
+                    href={INSTAGRAM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label="Instagram"
                     className="hover:text-accent hover:scale-110 transition"
                   >
                     <InstagramIcon className="w-3.5 h-3.5" />
-                  </a>
-                  <a
-                    href="https://facebook.com"
-                    aria-label="Facebook"
-                    className="hover:text-accent hover:scale-110 transition"
-                  >
-                    <FacebookIcon className="w-3.5 h-3.5" />
                   </a>
                 </div>
               </div>

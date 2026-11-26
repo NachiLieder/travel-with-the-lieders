@@ -17,7 +17,7 @@ The blog is **Travel With The Lieders** — a real-family Hebrew travel blog. Th
 
 ## Voice & tone — read this before writing a single word
 
-The blog's identity is **a real Israeli family being honest about traveling with kids**. The voice is set in the project instructions and in the reference trip at `content/trips/romania-10-days-2024/index.mdx`. Read that file before writing — it is the voice anchor.
+The blog's identity is **a real Israeli family being honest about traveling with kids**. The voice is set in the project instructions and in the reference trip at `content/trips/romania-10-days-2023/index.mdx`. Read that file before writing — it is the voice anchor.
 
 Concrete rules:
 
@@ -40,7 +40,7 @@ Run these phases in order. Don't skip ahead.
 Before asking the user anything, silently check the repo state:
 
 1. **Read** `lib/countries.ts` — confirm the trip's country already exists. If it doesn't, you'll add it in Phase 4.
-2. **Read** `content/trips/romania-10-days-2024/index.mdx` — internalize the voice and the structure. This is the gold standard.
+2. **Read** `content/trips/romania-10-days-2023/index.mdx` — internalize the voice and the structure. This is the gold standard.
 3. **List** `content/trips/` — see what other trips exist (for related-trip suggestions).
 4. **Check** if the user has already run `npm run trip:new -- <slug>` (look for an existing stub in `content/trips/<slug>/index.mdx`).
 5. **Check** if the user has already run `npm run photos:import -- <slug> ...` (look for `content/trips/<slug>/gallery.json` and `public/trips/<slug>/gallery/`).
@@ -54,7 +54,7 @@ Run a focused interview using the AskUserQuestion tool. Group into 4 questions m
 **Block A — identity:**
 - Country (Hebrew + ISO 3166-1 alpha-2)
 - Region(s) within that country
-- Slug (English, kebab-case, e.g. `north-italy-lakes-2024`)
+- Slug (English, kebab-case, e.g. `north-italy-lakes-2022`)
 - Year + season (spring/summer/autumn/winter)
 - Duration in days
 
@@ -230,7 +230,7 @@ Don't print the entire MDX inline — link to the file instead.
 
 | What | Where |
 |---|---|
-| Voice anchor | `content/trips/romania-10-days-2024/index.mdx` |
+| Voice anchor | `content/trips/romania-10-days-2023/index.mdx` |
 | Trip schema | `lib/trips.ts` (TripFrontmatter + TripBestFor) |
 | Country registry | `lib/countries.ts` |
 | MDX components | `components/trip/mdxComponents.tsx` |

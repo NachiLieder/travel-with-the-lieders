@@ -38,9 +38,9 @@ const TRIP_MAP: Record<string, string> = {
     "https://i66demri.wixsite.com/travel-with-the-lied/post/צפוןן-צ-יכיה-אוקטובר-2025",
   "portugal-madeira-2025":
     "https://i66demri.wixsite.com/travel-with-the-lied/post/דרום-פורטוגל-והאי-מדירה",
-  "italy-lakes-2024":
+  "italy-lakes-2022":
     "https://i66demri.wixsite.com/travel-with-the-lied/post/טיול-בלתי-נשכח-לתאילנד",
-  "romania-10-days-2024":
+  "romania-10-days-2023":
     "https://i66demri.wixsite.com/travel-with-the-lied/post/exploring-southeast-asia-top-travel-destinations-and-tips",
   "dominican-republic-2024":
     "https://i66demri.wixsite.com/travel-with-the-lied/post/europe-s-hidden-gems-off-the-beaten-path-travel-adventures",

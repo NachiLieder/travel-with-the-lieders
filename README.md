@@ -132,16 +132,16 @@ In Cowork mode, say *"new trip — we just got back from X"* (or paste your note
 
 ```bash
 # 1. Scaffold the trip folder
-npm run trip:new -- north-italy-lakes-2024
+npm run trip:new -- north-italy-lakes-2022
 
-# 2a. Drop your photos into content/trips/north-italy-lakes-2024/photos/
+# 2a. Drop your photos into content/trips/north-italy-lakes-2022/photos/
 #     with descriptive names: 01-hero.jpg, 02-cover.jpg, 03-day1-sirmione.jpg, ...
 
 # 2b. Or copy from an external folder — the script copies them in for you:
-npm run photos:import -- north-italy-lakes-2024 ~/Pictures/Italy
+npm run photos:import -- north-italy-lakes-2022 ~/Pictures/Italy
 
 # 3. Optimize them (4 widths, strip EXIF, generate gallery.json with auto captions)
-npm run photos:import -- north-italy-lakes-2024
+npm run photos:import -- north-italy-lakes-2022
 
 # 4. Edit captions/altText in content/trips/<slug>/gallery.json if you want
 #    Re-running photos:import preserves your edits.

@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { Mail } from "lucide-react";
-import { InstagramIcon, FacebookIcon } from "@/components/ui/BrandIcons";
+import { InstagramIcon } from "@/components/ui/BrandIcons";
 import { getCountriesByRegion } from "@/lib/countries";
+import { INSTAGRAM_URL } from "@/lib/site";
 
 /**
  * Footer: opaque cream band (it sits over the photo backdrop on inner pages,
  * and small text needs a solid surface), tracked link columns, a script
- * sign-off. Social links are still placeholders.
+ * sign-off.
  */
 export function SiteFooter() {
   const regions = getCountriesByRegion();
@@ -41,7 +41,6 @@ export function SiteFooter() {
               <li><Link href="/countries" className={link}>יעדים</Link></li>
               <li><Link href="/tips" className={link}>טיפים לטיול עם ילדים</Link></li>
               <li><Link href="/about" className={link}>קצת עלינו</Link></li>
-              <li><Link href="/newsletter" className={link}>ניוזלטר</Link></li>
             </ul>
           </div>
 
@@ -67,25 +66,13 @@ export function SiteFooter() {
             <h3 className={col}>עקבו אחרינו</h3>
             <div className="flex items-center gap-4 text-ink-muted">
               <a
-                href="https://instagram.com"
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Instagram"
                 className="hover:text-accent hover:scale-110 transition"
               >
                 <InstagramIcon className="w-5 h-5" />
-              </a>
-              <a
-                href="https://facebook.com"
-                aria-label="Facebook"
-                className="hover:text-accent hover:scale-110 transition"
-              >
-                <FacebookIcon className="w-5 h-5" />
-              </a>
-              <a
-                href="mailto:hello@example.com"
-                aria-label="Email"
-                className="hover:text-accent hover:scale-110 transition"
-              >
-                <Mail className="w-5 h-5" />
               </a>
             </div>
           </div>

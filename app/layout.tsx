@@ -9,6 +9,8 @@ import "./globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteBackdrop } from "@/components/layout/SiteBackdrop";
+import { SITE_URL } from "@/lib/site";
+import { Analytics } from "@vercel/analytics/next";
 
 const heebo = Heebo({
   variable: "--font-heebo",
@@ -41,7 +43,7 @@ const playpen = Playpen_Sans_Hebrew({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://travelwiththelieders.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Travel With The Lieders — טיולים משפחתיים מהעולם",
     template: "%s | Travel With The Lieders",
@@ -72,6 +74,7 @@ export default function RootLayout({
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
+        <Analytics />
       </body>
     </html>
   );
