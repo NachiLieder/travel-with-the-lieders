@@ -12,6 +12,7 @@
     "wix:import": "tsx scripts/wix-import.ts"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "d3-geo": "^3.1.2",
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.16.0",
